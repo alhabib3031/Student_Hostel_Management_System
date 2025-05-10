@@ -5,22 +5,23 @@
 <h3>Room Assignment Page</h3>
 <MudButton Color="Color.Primary" OnClick="AddNewStudent">Add Student</MudButton>
 <MudButton Color="Color.Secondary" OnClick="DeleteCurrentStudent">Delete Student</MudButton>
-<MudButton Color="Color.Warning" OnClick="ChangeStudentRoom">Change Student Room</MudButton>
+<MudButton Color="Color.Warning" OnClick="ChangeStudentRoom">Edit Student</MudButton>
 
 
 @code {
 
-    private void AddNewStudent()
-    {
+	private void AddNewStudent()
+	{
 		Navigation.NavigateTo("/AddStudent");
-    }
+	}
 
 	private void DeleteCurrentStudent()
 	{
 		Navigation.NavigateTo("/DeleteStudent");
 	}
 
-		private void ChangeStudentRoom()
-		{
-		}
+	private void ChangeStudentRoom()
+	{
+		Navigation.NavigateTo("/EditStudents");
+	}
 }

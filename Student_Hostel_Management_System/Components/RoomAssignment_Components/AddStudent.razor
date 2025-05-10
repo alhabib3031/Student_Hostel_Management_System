@@ -2,6 +2,8 @@
 @using Student_Hostel_Management_System.Data.Entities
 @rendermode InteractiveServer
 @inject NavigationManager NavigationManager
+@inject HostelDataService DataService
+
 
 <h3>تحديث بيانات الطالب</h3>
 
@@ -83,7 +85,7 @@
     Student SearchResult { get; set; }
 
     // قائمة النزل
-    List<Hostel> Hostels = new List<Hostel>();
+    List<Hostel> Hostels => DataService.Hostels;
 	// قائمة الطلاب
     List<Student> AllStudents { get; set; } = new List<Student>();
 

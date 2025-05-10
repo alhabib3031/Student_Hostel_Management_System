@@ -1,6 +1,8 @@
 ﻿@page "/DeleteStudent"
 @using Student_Hostel_Management_System.Data.Entities
 @rendermode InteractiveServer
+@inject HostelDataService DataService
+
 
 <h3>حذف طالب</h3>
 
@@ -49,7 +51,7 @@ else if (Searched && !SearchResults.Any())
     bool Searched { get; set; } = false;
 
     // قائمة النزل (يجب ربطها بمصدر مشترك)
-    List<Hostel> Hostels { get; set; } = new();
+    List<Hostel> Hostels => DataService.Hostels;
 
     private void SearchById()
     {

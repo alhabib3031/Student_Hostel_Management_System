@@ -1,0 +1,82 @@
+﻿@page "/EditStudents"
+@using Student_Hostel_Management_System.Data.Entities
+@rendermode InteractiveServer
+@inject HostelDataService DataService
+
+
+<h3>تعديل بيانات طالب</h3>
+
+<MudTextField @bind-Value="SearchId" Label="رقم الطالب" Variant="Variant.Text" />
+<MudButton Color="Color.Primary" OnClick="SearchStudent">بحث</MudButton>
+
+@if (TargetStudent != null)
+{
+    <EditForm Model="TargetStudent" OnValidSubmit="SaveChanges">
+        <DataAnnotationsValidator />
+        <MudTextField @bind-Value="TargetStudent.Name" Label="الاسم" Variant="Variant.Text" />
+        <MudTextField @bind-Value="TargetStudent.Email" Label="البريد الإلكتروني" Variant="Variant.Text" />
+        <MudTextField @bind-Value="TargetStudent.PhoneNumber" Label="رقم الهاتف" Variant="Variant.Text" />
+        <MudTextField @bind-Value="TargetStudent.Address" Label="العنوان" Variant="Variant.Text" />
+        <MudButton Color="Color.Success" ButtonType="ButtonType.Submit">حفظ التعديلات</MudButton>
+    </EditForm>
+}
+else if (Searched)
+{
+    <p>الطالب غير موجود.</p>
+}
+
+@code {
+    int SearchId { get; set; }
+    Student? TargetStudent { get; set; }
+    bool Searched = false;
+
+    List<Hostel> Hostels => DataService.Hostels;
+
+    protected override void OnInitialized()
+    {
+        // مثال: تحميل بيانات النزل كما في الصفحة السابقة
+        for (int i = 1; i <= 5; i++)
+        {
+            var hostel = new Hostel
+                {
+                    Id = i,
+                    Name = $"بيت {i}"
+                };
+
+            for (int j = 1; j <= 200; j++)
+            {
+                hostel.Rooms.Add(new Room
+                    {
+                        Id = j
+                    });
+            }
+
+            Hostels.Add(hostel);
+        }
+    }
+
+    private void SearchStudent()
+    {
+        foreach (var hostel in Hostels)
+        {
+            foreach (var room in hostel.Rooms)
+            {
+                TargetStudent = room.Students.FirstOrDefault(s => s.Id == SearchId);
+                if (TargetStudent != null)
+                {
+                    Searched = true;
+                    return;
+                }
+            }
+        }
+
+        TargetStudent = null;
+        Searched = true;
+    }
+
+    private void SaveChanges()
+    {
+        // لا حاجة للحفظ الفعلي في الذاكرة لأننا عدلنا الكائن مباشرة
+        Console.WriteLine("تم حفظ التعديلات");
+    }
+}
