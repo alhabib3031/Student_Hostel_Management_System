@@ -1,0 +1,110 @@
+﻿@page "/DeleteStudent"
+@using Student_Hostel_Management_System.Data.Entities
+@rendermode InteractiveServer
+
+<h3>حذف طالب</h3>
+
+<!-- البحث برقم الطالب -->
+<MudTextField @bind-Value="SearchStudentId" Label="بحث برقم الطالب" Variant="Variant.Text" />
+<MudButton Color="Color.Primary" OnClick="SearchById">بحث بالرقم</MudButton>
+
+<!-- البحث بالاسم -->
+<MudTextField @bind-Value="SearchStudentName" Label="بحث بالاسم" Variant="Variant.Text" />
+<MudButton Color="Color.Primary" OnClick="SearchByName">بحث بالاسم</MudButton>
+
+@if (SearchResults.Any())
+{
+    <h4>نتائج البحث</h4>
+    <MudTable Items="SearchResults">
+        <HeaderContent>
+            <MudTh>الرقم</MudTh>
+            <MudTh>الاسم</MudTh>
+            <MudTh>البريد</MudTh>
+            <MudTh>الهاتف</MudTh>
+            <MudTh>العنوان</MudTh>
+            <MudTh>الإجراء</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd>@context.Id</MudTd>
+            <MudTd>@context.Name</MudTd>
+            <MudTd>@context.Email</MudTd>
+            <MudTd>@context.PhoneNumber</MudTd>
+            <MudTd>@context.Address</MudTd>
+            <MudTd>
+                <MudButton Color="Color.Error" OnClick="() => Delete_Student(context.Id)">حذف</MudButton>
+            </MudTd>
+        </RowTemplate>
+    </MudTable>
+}
+else if (Searched && !SearchResults.Any())
+{
+    <p>لا يوجد طلاب مطابقين للبحث.</p>
+}
+
+@code {
+    // البحث
+    int SearchStudentId { get; set; }
+    string SearchStudentName { get; set; } = string.Empty;
+    List<Student> SearchResults { get; set; } = new();
+    bool Searched { get; set; } = false;
+
+    // قائمة النزل (يجب ربطها بمصدر مشترك)
+    List<Hostel> Hostels { get; set; } = new();
+
+    private void SearchById()
+    {
+        SearchResults.Clear();
+        foreach (var hostel in Hostels)
+        {
+            foreach (var room in hostel.Rooms)
+            {
+                var student = room.Students.FirstOrDefault(s => s.Id == SearchStudentId);
+                if (student != null)
+                {
+                    SearchResults.Add(student);
+                    break;
+                }
+            }
+        }
+        Searched = true;
+    }
+
+    private void SearchByName()
+    {
+        SearchResults.Clear();
+        foreach (var hostel in Hostels)
+        {
+            foreach (var room in hostel.Rooms)
+            {
+                var matchedStudents = room.Students
+                    .Where(s => s.Name.Contains(SearchStudentName, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+                if (matchedStudents.Any())
+                {
+                    SearchResults.AddRange(matchedStudents);
+                }
+            }
+        }
+        Searched = true;
+    }
+
+    private void Delete_Student(int studentId)
+    {
+        foreach (var hostel in Hostels)
+        {
+            foreach (var room in hostel.Rooms)
+            {
+                var student = room.Students.FirstOrDefault(s => s.Id == studentId);
+                if (student != null)
+                {
+                    room.Students.Remove(student);
+                    break;
+                }
+            }
+        }
+
+        // تحديث النتائج بعد الحذف
+        SearchResults = SearchResults.Where(s => s.Id != studentId).ToList();
+        StateHasChanged();
+    }
+}
