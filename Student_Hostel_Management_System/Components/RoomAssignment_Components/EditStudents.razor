@@ -13,10 +13,10 @@
 {
     <EditForm Model="TargetStudent" OnValidSubmit="SaveChanges">
         <DataAnnotationsValidator />
-        <MudTextField @bind-Value="TargetStudent.Name" Label="الاسم" Variant="Variant.Text" />
-        <MudTextField @bind-Value="TargetStudent.Email" Label="البريد الإلكتروني" Variant="Variant.Text" />
-        <MudTextField @bind-Value="TargetStudent.PhoneNumber" Label="رقم الهاتف" Variant="Variant.Text" />
-        <MudTextField @bind-Value="TargetStudent.Address" Label="العنوان" Variant="Variant.Text" />
+        <MudTextField @bind-Value="TargetStudent.Name" Label="الاسم" Variant="Variant.Filled" Margin="Margin.Dense" />
+        <MudTextField @bind-Value="TargetStudent.Email" Label="البريد الإلكتروني" Variant="Variant.Filled" Margin="Margin.Dense" />
+        <MudTextField @bind-Value="TargetStudent.PhoneNumber" Label="رقم الهاتف" Variant="Variant.Filled" Margin="Margin.Dense" />
+        <MudTextField @bind-Value="TargetStudent.Address" Label="العنوان" Variant="Variant.Filled" Margin="Margin.Dense" />
         <MudButton Color="Color.Success" ButtonType="ButtonType.Submit">حفظ التعديلات</MudButton>
     </EditForm>
 }

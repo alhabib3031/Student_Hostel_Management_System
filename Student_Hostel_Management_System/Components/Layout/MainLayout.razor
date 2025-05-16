@@ -4,9 +4,9 @@
 <MudLayout>
     <MudAppBar Elevation="1">
         <MudStaticNavDrawerToggle DrawerId="nav-drawer" Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" />
-        <MudText Typo="Typo.h5" Class="ml-3">Application</MudText>
+        <MudText Typo="Typo.h5" Class="ml-3">القائمة</MudText>
     </MudAppBar>
-    <MudDrawer id="nav-drawer" @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
+    <MudDrawer id="nav-drawer" @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2" Anchor="Anchor.Right">
         <NavMenu />
     </MudDrawer>
     <MudMainContent Class="pt-16 pa-4">
@@ -22,7 +22,7 @@
 </div>
 
 @code {
-    private bool _drawerOpen = true;
+    private bool _drawerOpen = false;
 }
 
 

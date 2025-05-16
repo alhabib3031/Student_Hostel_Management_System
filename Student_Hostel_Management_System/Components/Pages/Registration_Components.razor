@@ -1,0 +1,34 @@
+﻿@page "/Registration_Components"
+@rendermode InteractiveServer
+@inject NavigationManager NavigationManager
+
+<h3>Registration_Components</h3>
+
+<MudButton Color="Color.Primary" OnClick="Regester">Regester</MudButton>
+<MudButton Color="Color.Primary" OnClick="Login">Login</MudButton>
+<p>@message</p>
+
+<MudButton Color="Color.Primary" OnClick="Registration">تقديم تسجيل</MudButton>
+
+
+
+@code {
+	private string message = string.Empty;
+
+	private void Login()
+	{
+		NavigationManager.NavigateTo("/Account/Login");
+		message = "هذا الخيار غير متاح بعد";
+	}
+
+	private void Regester()
+	{
+		NavigationManager.NavigateTo("/Account/Register");
+		message = "هذا الخيار غير متاح بعد";
+	}
+
+	private void Registration()
+	{
+		
+	}
+}
