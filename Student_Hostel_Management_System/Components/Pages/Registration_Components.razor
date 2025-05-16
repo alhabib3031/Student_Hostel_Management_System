@@ -2,33 +2,81 @@
 @rendermode InteractiveServer
 @inject NavigationManager NavigationManager
 
-<h3>Registration_Components</h3>
+<MudButton Variant="Variant.Filled" OnClick="@(() => NavigationManager.NavigateTo("/Account/Register"))">التسجيل</MudButton>
+<MudButton Variant="Variant.Filled" OnClick="@(() => NavigationManager.NavigateTo("/Account/Login"))">تسجيل الدخول</MudButton>
 
-<MudButton Color="Color.Primary" OnClick="Regester">Regester</MudButton>
-<MudButton Color="Color.Primary" OnClick="Login">Login</MudButton>
-<p>@message</p>
+<br><br>
 
-<MudButton Color="Color.Primary" OnClick="Registration">تقديم تسجيل</MudButton>
+<h3>رفع وثائق التسجيل</h3>
 
+<br>
+<p>متطلبات بيانات التسجيل
+	<br>
+	1. صورة شخصية
+	<br>
+	2. صورة من الهوية الوطنية
+	<br>
+	3. صورة من الشهادة الدراسية
+	<br>
+	4. صورة من شهادة الميلاد
+	<br>
+	5. صورة من السجل الأكاديمي (إن وجد)
+	<br>
+	6. صورة من الشهادة الصحية 
+	<br />
+	7. دفع رسوم التسجيل 150 دينار ليبي إلي حساب خزينة الجامعة
+	<br>
+	ملاحظة يمكنك الدفع بعد ما يتم مراجعة البيانات من قبل إدارة السكن
+	<br>
+	يفضل الإحتفاض بنسخة من رقم إيصال الدفع في حال الدفع
+</p>
 
+<br>
+<br>
 
-@code {
-	private string message = string.Empty;
+<MudFileUpload T="IBrowserFile" Accept=".pdf" FilesChanged="UploadFiles2" MaximumFileCount="100">
+	<ActivatorContent>
+		<MudButton Variant="Variant.Filled"
+		Color="Color.Primary"
+		StartIcon="@Icons.Material.Filled.CloudUpload">
+			Only .pdf files
+		</MudButton>
+	</ActivatorContent>
+</MudFileUpload>
 
-	private void Login()
+<MudButton Color="Color.Primary" OnClick="SendFiles">إرسال الملف</MudButton>
+
+@if (files != null)
+{
+	<MudList T="string">
+		@foreach (var file in files)
+		{
+			<MudListItem Icon="@Icons.Material.Filled.AttachFile">
+				@file.Name <code>@file.Size bytes</code>
+			</MudListItem>
+		}
+	</MudList>
+}
+@code
+{
+	IList<IBrowserFile> files = new List<IBrowserFile>();
+
+	private void UploadFiles(IReadOnlyList<IBrowserFile> files)
 	{
-		NavigationManager.NavigateTo("/Account/Login");
-		message = "هذا الخيار غير متاح بعد";
+		foreach (var file in files)
+		{
+			this.files.Add(file);
+		}
+		//TODO upload the files to the server
 	}
 
-	private void Regester()
+	private void UploadFiles2(IBrowserFile file)
 	{
-		NavigationManager.NavigateTo("/Account/Register");
-		message = "هذا الخيار غير متاح بعد";
+		files.Add(file);
+		//TODO upload the files to the server
 	}
-
-	private void Registration()
+	private void SendFiles(MouseEventArgs args)
 	{
-		
+		throw new NotImplementedException();
 	}
 }

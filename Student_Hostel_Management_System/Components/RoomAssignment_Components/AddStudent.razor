@@ -8,21 +8,21 @@
 <h3>تحديث بيانات الطالب</h3>
 
 <!-- إدخال بيانات طالب جديد -->
-<MudTextField @bind-Value="StudentName" Label="اسم الطالب" Variant="Variant.Text" />
-<MudTextField @bind-Value="StudentId" Label="رقم الطالب" Variant="Variant.Text" />
-<MudTextField @bind-Value="StudentEmail" Label="البريد الإلكتروني" Variant="Variant.Text" />
-<MudTextField @bind-Value="StudentPhone" Label="رقم الهاتف" Variant="Variant.Text" />
-<MudTextField @bind-Value="StudentAddress" Label="العنوان" Variant="Variant.Text" />
+<MudTextField @bind-Value="StudentName" Label="اسم الطالب" Variant="Variant.Outlined" />
+<MudTextField @bind-Value="StudentId" Label="رقم الطالب" Variant="Variant.Outlined" />
+<MudTextField @bind-Value="StudentEmail" Label="البريد الإلكتروني" Variant="Variant.Outlined" />
+<MudTextField @bind-Value="StudentPhone" Label="رقم الهاتف" Variant="Variant.Outlined" />
+<MudTextField @bind-Value="StudentAddress" Label="العنوان" Variant="Variant.Outlined" />
 
-<MudButton Color="Color.Primary" OnClick="AddStudentInfo">إضافة طالب</MudButton>
+<MudButton Color=" Color.Secondary" OnClick="AddStudentInfo" Variant="Variant.Filled">إضافة طالب</MudButton>
 
 <br />
 <br />
 
 <!-- مربع بحث عن طالب برقم الطالب -->
-<MudTextField @bind-Value="SearchStudentId" Label="بحث برقم الطالب" Variant="Variant.Text" />
-<MudButton Color="Color.Secondary" OnClick="SearchStudent">بحث</MudButton>
-<MudButton Color="Color.Secondary" OnClick="DisplayAllStudent">عرض كل الطلاب</MudButton>
+<MudTextField @bind-Value="SearchStudentId" Label="بحث برقم الطالب" Variant="Variant.Filled" />
+<MudButton Color="Color.Secondary" OnClick="SearchStudent" Variant="Variant.Filled">بحث</MudButton>
+<MudButton Color="Color.Secondary" OnClick="DisplayAllStudent" Variant="Variant.Filled">عرض كل الطلاب</MudButton>
 
 @if (SearchResult != null)
 {
