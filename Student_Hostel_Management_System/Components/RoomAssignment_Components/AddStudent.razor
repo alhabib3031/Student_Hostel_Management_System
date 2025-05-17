@@ -1,0 +1,202 @@
+﻿@page "/AddStudent"
+@using Student_Hostel_Management_System.Data.Entities
+@rendermode InteractiveServer
+@inject NavigationManager NavigationManager
+@inject HostelDataService DataService
+
+
+<h3>تحديث بيانات الطالب</h3>
+
+<!-- إدخال بيانات طالب جديد -->
+<MudTextField @bind-Value="StudentName" Label="اسم الطالب" Variant="Variant.Outlined" />
+<MudTextField @bind-Value="StudentId" Label="رقم الطالب" Variant="Variant.Outlined" />
+<MudTextField @bind-Value="StudentEmail" Label="البريد الإلكتروني" Variant="Variant.Outlined" />
+<MudTextField @bind-Value="StudentPhone" Label="رقم الهاتف" Variant="Variant.Outlined" />
+<MudTextField @bind-Value="StudentAddress" Label="العنوان" Variant="Variant.Outlined" />
+
+<MudButton Color=" Color.Secondary" OnClick="AddStudentInfo" Variant="Variant.Filled">إضافة طالب</MudButton>
+
+<br />
+<br />
+
+<!-- مربع بحث عن طالب برقم الطالب -->
+<MudTextField @bind-Value="SearchStudentId" Label="بحث برقم الطالب" Variant="Variant.Filled" />
+<MudButton Color="Color.Secondary" OnClick="SearchStudent" Variant="Variant.Filled">بحث</MudButton>
+<MudButton Color="Color.Secondary" OnClick="DisplayAllStudent" Variant="Variant.Filled">عرض كل الطلاب</MudButton>
+
+@if (SearchResult != null)
+{
+    <h4>نتيجة البحث</h4>
+    <MudTable Items="new List<Student> { SearchResult }">
+        <HeaderContent>
+            <MudTh>رقم الطالب</MudTh>
+            <MudTh>اسم الطالب</MudTh>
+            <MudTh>البريد الإلكتروني</MudTh>
+            <MudTh>رقم الهاتف</MudTh>
+            <MudTh>العنوان</MudTh>
+            <MudTh>الإجراء</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd>@context.Id</MudTd>
+            <MudTd>@context.Name</MudTd>
+            <MudTd>@context.Email</MudTd>
+            <MudTd>@context.PhoneNumber</MudTd>
+            <MudTd>@context.Address</MudTd>
+            <MudTd>
+                <MudButton Color="Color.Error" OnClick="() => DeleteStudent(context.Id)">حذف</MudButton>
+            </MudTd>
+        </RowTemplate>
+    </MudTable>
+}
+
+@if (AllStudents != null && AllStudents.Any())
+{
+    <h4>جميع الطلاب</h4>
+    <MudTable Items="AllStudents">
+        <HeaderContent>
+            <MudTh>رقم الطالب</MudTh>
+            <MudTh>اسم الطالب</MudTh>
+            <MudTh>البريد الإلكتروني</MudTh>
+            <MudTh>رقم الهاتف</MudTh>
+            <MudTh>العنوان</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd>@context.Id</MudTd>
+            <MudTd>@context.Name</MudTd>
+            <MudTd>@context.Email</MudTd>
+            <MudTd>@context.PhoneNumber</MudTd>
+            <MudTd>@context.Address</MudTd>
+        </RowTemplate>
+    </MudTable>
+}
+
+
+@code {
+
+    // متغيرات إدخال طالب
+    string StudentName { get; set; }
+    int StudentId { get; set; }
+    string StudentEmail { get; set; }
+    string StudentPhone { get; set; }
+    string StudentAddress { get; set; }
+
+    // متغيرات البحث
+    int SearchStudentId { get; set; }
+    Student SearchResult { get; set; }
+
+    // قائمة النزل
+    List<Hostel> Hostels => DataService.Hostels;
+	// قائمة الطلاب
+    List<Student> AllStudents { get; set; } = new List<Student>();
+
+    protected override void OnInitialized()
+    {
+        // تجهيز 5 نزل، كل نزل فيه 200 غرفة
+        for (int i = 1; i <= 5; i++)
+        {
+            var hostel = new Hostel
+                {
+                    Id = i,
+                    Name = $"بيت {i}"
+                };
+
+            for (int j = 1; j <= 200; j++)
+            {
+                hostel.Rooms.Add(new Room
+                    {
+                        Id = j
+                    });
+            }
+
+            Hostels.Add(hostel);
+        }
+    }
+
+    private void AddStudentInfo()
+    {
+        var newStudent = new Student
+            {
+                Id = StudentId,
+                Name = StudentName,
+                Email = StudentEmail,
+                PhoneNumber = StudentPhone,
+                Address = StudentAddress
+            };
+
+        bool studentAdded = false;
+
+        foreach (var hostel in Hostels)
+        {
+            foreach (var room in hostel.Rooms)
+            {
+                if (room.Students.Count < 2)
+                {
+                    room.Students.Add(newStudent);
+                    studentAdded = true;
+                    break;
+                }
+            }
+            if (studentAdded) break;
+        }
+
+        if (!studentAdded)
+        {
+            Console.WriteLine("لا توجد غرف فارغة!");
+        }
+
+        // تصفير المدخلات
+        StudentName = StudentEmail = StudentPhone = StudentAddress = string.Empty;
+        StudentId = 0;
+    }
+
+    private void SearchStudent()
+    {
+        foreach (var hostel in Hostels)
+        {
+            foreach (var room in hostel.Rooms)
+            {
+                SearchResult = room.Students.FirstOrDefault(s => s.Id == SearchStudentId);
+                if (SearchResult != null)
+                    return;
+            }
+        }
+
+        SearchResult = null; // لو ما لقيت الطالب
+    }
+
+    private void DisplayAllStudent()
+    {
+        AllStudents.Clear();
+
+        foreach (var hostel in Hostels)
+        {
+            foreach (var room in hostel.Rooms)
+            {
+                foreach (var student in room.Students)
+                {
+                    AllStudents.Add(student);
+                }
+            }
+        }
+
+        SearchResult = null; // إخفاء نتيجة البحث الفردي عند عرض الكل
+    }
+
+
+    private void DeleteStudent(int studentId)
+    {
+        foreach (var hostel in Hostels)
+        {
+            foreach (var room in hostel.Rooms)
+            {
+                var studentToDelete = room.Students.FirstOrDefault(s => s.Id == studentId);
+                if (studentToDelete != null)
+                {
+                    room.Students.Remove(studentToDelete);
+                    SearchResult = null;
+                    return;
+                }
+            }
+        }
+    }
+}

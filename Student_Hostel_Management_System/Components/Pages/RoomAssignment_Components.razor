@@ -1,0 +1,29 @@
+﻿@page "/RoomAssignment_Components"
+@rendermode InteractiveServer
+@inject NavigationManager Navigation
+
+<h3>صفحة تخصيص الغرف</h3>
+<p>صفحة تستعمل من قبل مدير البيت فقط</p>
+<br />
+<MudButton Variant="Variant.Filled" Color=" Color.Primary" OnClick="AddNewStudent">إضاف طالب جديد</MudButton>
+<MudButton Variant="Variant.Filled" Color=" Color.Secondary" OnClick="DeleteCurrentStudent">حذف طالب</MudButton>
+<MudButton Variant="Variant.Filled" Color=" Color.Warning" OnClick="ChangeStudentRoom">تعديل بيانات طالب</MudButton>
+
+
+@code {
+
+	private void AddNewStudent()
+	{
+		Navigation.NavigateTo("/AddStudent");
+	}
+
+	private void DeleteCurrentStudent()
+	{
+		Navigation.NavigateTo("/DeleteStudent");
+	}
+
+	private void ChangeStudentRoom()
+	{
+		Navigation.NavigateTo("/EditStudents");
+	}
+}

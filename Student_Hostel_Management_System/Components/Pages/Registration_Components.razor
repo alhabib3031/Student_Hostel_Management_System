@@ -1,0 +1,82 @@
+﻿@page "/Registration_Components"
+@rendermode InteractiveServer
+@inject NavigationManager NavigationManager
+
+<MudButton Variant="Variant.Filled" OnClick="@(() => NavigationManager.NavigateTo("/Account/Register"))">التسجيل</MudButton>
+<MudButton Variant="Variant.Filled" OnClick="@(() => NavigationManager.NavigateTo("/Account/Login"))">تسجيل الدخول</MudButton>
+
+<br><br>
+
+<h3>رفع وثائق التسجيل</h3>
+
+<br>
+<p>متطلبات بيانات التسجيل
+	<br>
+	1. صورة شخصية
+	<br>
+	2. صورة من الهوية الوطنية
+	<br>
+	3. صورة من الشهادة الدراسية
+	<br>
+	4. صورة من شهادة الميلاد
+	<br>
+	5. صورة من السجل الأكاديمي (إن وجد)
+	<br>
+	6. صورة من الشهادة الصحية 
+	<br />
+	7. دفع رسوم التسجيل 150 دينار ليبي إلي حساب خزينة الجامعة
+	<br>
+	ملاحظة يمكنك الدفع بعد ما يتم مراجعة البيانات من قبل إدارة السكن
+	<br>
+	يفضل الإحتفاض بنسخة من رقم إيصال الدفع في حال الدفع
+</p>
+
+<br>
+<br>
+
+<MudFileUpload T="IBrowserFile" Accept=".pdf" FilesChanged="UploadFiles2" MaximumFileCount="100">
+	<ActivatorContent>
+		<MudButton Variant="Variant.Filled"
+		Color="Color.Primary"
+		StartIcon="@Icons.Material.Filled.CloudUpload">
+			Only .pdf files
+		</MudButton>
+	</ActivatorContent>
+</MudFileUpload>
+
+<MudButton Color="Color.Primary" OnClick="SendFiles">إرسال الملف</MudButton>
+
+@if (files != null)
+{
+	<MudList T="string">
+		@foreach (var file in files)
+		{
+			<MudListItem Icon="@Icons.Material.Filled.AttachFile">
+				@file.Name <code>@file.Size bytes</code>
+			</MudListItem>
+		}
+	</MudList>
+}
+@code
+{
+	IList<IBrowserFile> files = new List<IBrowserFile>();
+
+	private void UploadFiles(IReadOnlyList<IBrowserFile> files)
+	{
+		foreach (var file in files)
+		{
+			this.files.Add(file);
+		}
+		//TODO upload the files to the server
+	}
+
+	private void UploadFiles2(IBrowserFile file)
+	{
+		files.Add(file);
+		//TODO upload the files to the server
+	}
+	private void SendFiles(MouseEventArgs args)
+	{
+		throw new NotImplementedException();
+	}
+}
