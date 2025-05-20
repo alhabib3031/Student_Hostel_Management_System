@@ -1,0 +1,43 @@
+﻿@page "/AdministrationList"
+@using Student_Hostel_Management_System.Data.Entites
+@rendermode InteractiveServer
+@inject AdministrationDesignServices administrationDesignServices
+
+<h3>Administration List</h3>
+
+<MudTable Items="Administrations" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading" LoadingProgressColor="Color.Info">
+    <HeaderContent>
+        <MudTh>Id</MudTh>
+        <MudTh>NID</MudTh>
+        <MudTh>Name</MudTh>
+        <MudTh>Phone</MudTh>
+        <MudTh>Email</MudTh>
+        <MudTh>Discription</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Id">@context.Id</MudTd>
+        <MudTd DataLabel="NID">@context.NID</MudTd>
+        <MudTd DataLabel="Name">@context.Name</MudTd>
+        <MudTd DataLabel="Phone">@context.Phone</MudTd>
+        <MudTd DataLabel="Email">@context.Email</MudTd>
+        <MudTd DataLabel="Discription">@context.Discription</MudTd>
+    </RowTemplate>
+</MudTable>
+
+<MudSwitch @bind-Value="_loading" Color="Color.Primary">Show Loading</MudSwitch>
+
+@code {
+
+    private List<Administration> Administrations { get; set; } = new List<Administration>();
+    private bool _loading;
+
+    protected override async Task OnInitializedAsync()
+    {
+        administrationDesignServices = new AdministrationDesignServices();
+
+		_loading = true;
+        await Task.Delay(500); // لتجربة التحميل
+        Administrations = administrationDesignServices.GetAllAdministrations();
+		_loading = false;
+    }
+}

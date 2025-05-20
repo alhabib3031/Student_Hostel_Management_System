@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using MudBlazor.Services;
 using Student_Hostel_Management_System.Components;
 using Student_Hostel_Management_System.Components.Account;
+using Student_Hostel_Management_System.Components.Pages.AdministrationComponents;
 using Student_Hostel_Management_System.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +20,9 @@ builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityUserAccessor>();
 builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
+
+//=====================Added Services=====================//
+builder.Services.AddScoped<AdministrationDesignServices>();
 
 builder.Services.AddAuthentication(options =>
     {
