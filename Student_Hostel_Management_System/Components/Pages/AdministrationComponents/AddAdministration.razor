@@ -1,0 +1,34 @@
+﻿@page "/AddAdministration"
+@page "/AddAdministration/{Id:Guid}"
+@using Student_Hostel_Management_System.Data.Entites
+@rendermode InteractiveServer
+@inject NavigationManager NavigationManager
+<h3>Add Administration</h3>
+
+<MudTextField @bind-Value="Administration.NID" Label="NID" />
+<MudTextField @bind-Value="Administration.Name" Label="Name" />
+<MudTextField @bind-Value="Administration.Phone" Label="Phone" />
+<MudTextField @bind-Value="Administration.Email" Label="Email" />
+<MudTextField @bind-Value="Administration.Discription" Label="Discription" />
+<br />
+<MudButton OnClick="Save" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Save" Color="Color.Primary">حفظ</MudButton>
+
+@code {
+
+	[Parameter]
+	public Guid Id { get; set; }
+	private Administration Administration { get; set; } = new Administration();
+
+	protected override async Task OnInitializedAsync()
+	{
+		await Task.Delay(500);
+		Administration = new Administration();
+	}
+
+	private async Task Save()
+	{
+		// Simulate saving the data
+		await Task.Delay(500);
+		Console.WriteLine($"Saved: {Administration.NID}, {Administration.Name}, {Administration.Phone}, {Administration.Email}, {Administration.Discription}");
+	}
+}

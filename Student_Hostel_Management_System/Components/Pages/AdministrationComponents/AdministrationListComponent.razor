@@ -1,11 +1,23 @@
 ﻿@page "/AdministrationList"
 @using Student_Hostel_Management_System.Data.Entites
 @rendermode InteractiveServer
+@inject NavigationManager NavigationManager
 @inject AdministrationDesignServices administrationDesignServices
 
 <h3>Administration List</h3>
 
 <MudTable Items="Administrations" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading" LoadingProgressColor="Color.Info">
+    <ToolBarContent>
+        <MudSpacer />
+
+        <MudButton Color="Color.Primary"
+        OnClick="AddAdministration"
+        Variant="Variant.Filled"
+        StartIcon="@Icons.Material.Filled.Add">
+            إضافة مدير
+        </MudButton>
+
+    </ToolBarContent>
     <HeaderContent>
         <MudTh>Id</MudTh>
         <MudTh>NID</MudTh>
@@ -13,6 +25,7 @@
         <MudTh>Phone</MudTh>
         <MudTh>Email</MudTh>
         <MudTh>Discription</MudTh>
+        <MudTh>Operations</MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="Id">@context.Id</MudTd>
@@ -21,6 +34,17 @@
         <MudTd DataLabel="Phone">@context.Phone</MudTd>
         <MudTd DataLabel="Email">@context.Email</MudTd>
         <MudTd DataLabel="Discription">@context.Discription</MudTd>
+        <MudTd>
+            <MudButton Color="Color.Primary"
+            OnClick="@EditAdministration"
+            Variant="Variant.Filled"
+            StartIcon="@Icons.Material.Filled.Edit" />
+
+            <MudButton Color="Color.Error"
+            OnClick="() => DeleteAdministration(context)"
+            Variant="Variant.Filled"
+            StartIcon="@Icons.Material.Filled.Delete" />
+        </MudTd>
     </RowTemplate>
 </MudTable>
 
@@ -35,9 +59,26 @@
     {
         administrationDesignServices = new AdministrationDesignServices();
 
-		_loading = true;
+        _loading = true;
         await Task.Delay(500); // لتجربة التحميل
         Administrations = administrationDesignServices.GetAllAdministrations();
-		_loading = false;
+        _loading = false;
+    }
+
+    private void AddAdministration()
+    {
+        // Navigate to the add student page
+        NavigationManager.NavigateTo("/AddAdministration");
+    }
+
+    private void EditAdministration()
+    {
+        // Navigate to the edit student page
+        NavigationManager.NavigateTo("/EditStudent");
+    }
+
+    private void DeleteAdministration(Administration administration)
+    {
+		Administrations.Remove(administration);
     }
 }
