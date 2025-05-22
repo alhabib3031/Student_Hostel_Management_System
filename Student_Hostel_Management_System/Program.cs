@@ -6,6 +6,8 @@ using Student_Hostel_Management_System.Components;
 using Student_Hostel_Management_System.Components.Account;
 using Student_Hostel_Management_System.Components.Pages.AdministrationComponents;
 using Student_Hostel_Management_System.Data;
+using Student_Hostel_Management_System.Services;
+using Student_Hostel_Management_System.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,9 +22,10 @@ builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityUserAccessor>();
 builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
-
 //=====================Added Services=====================//
 builder.Services.AddScoped<AdministrationDesignServices>();
+builder.Services.AddScoped<IAdminstrationDataService, AdminstrationDataService>();
+builder.Services.AddScoped<IStudentsDataService, StudentsDataService>();
 
 builder.Services.AddAuthentication(options =>
     {
@@ -32,8 +35,10 @@ builder.Services.AddAuthentication(options =>
     .AddIdentityCookies();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
+
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)

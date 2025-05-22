@@ -1,8 +1,13 @@
 ﻿@page "/AdministrationList"
 @using Student_Hostel_Management_System.Data.Entites
+@using Student_Hostel_Management_System.Services.Interfaces
 @rendermode InteractiveServer
 @inject NavigationManager NavigationManager
 @inject AdministrationDesignServices administrationDesignServices
+@inject IAdminstrationDataService AdminDataSevice
+@inject IStudentsDataService StudentsDataService 
+@inject ISnackbar Snackbar
+
 
 <h3>Administration List</h3>
 
@@ -36,7 +41,7 @@
         <MudTd DataLabel="Discription">@context.Discription</MudTd>
         <MudTd>
             <MudButton Color="Color.Primary"
-            OnClick="@EditAdministration"
+            OnClick="() => EditAdministration(context.Id)"
             Variant="Variant.Filled"
             StartIcon="@Icons.Material.Filled.Edit" />
 
@@ -48,8 +53,6 @@
     </RowTemplate>
 </MudTable>
 
-<MudSwitch @bind-Value="_loading" Color="Color.Primary">Show Loading</MudSwitch>
-
 @code {
 
     private List<Administration> Administrations { get; set; } = new List<Administration>();
@@ -57,11 +60,13 @@
 
     protected override async Task OnInitializedAsync()
     {
+        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomCenter;
+
         administrationDesignServices = new AdministrationDesignServices();
 
         _loading = true;
         await Task.Delay(500); // لتجربة التحميل
-        Administrations = administrationDesignServices.GetAllAdministrations();
+        Administrations = await AdminDataSevice.GetAll();
         _loading = false;
     }
 
@@ -71,14 +76,20 @@
         NavigationManager.NavigateTo("/AddAdministration");
     }
 
-    private void EditAdministration()
+    private void EditAdministration(Guid adminId)
     {
         // Navigate to the edit student page
-        NavigationManager.NavigateTo("/EditStudent");
+        NavigationManager.NavigateTo($"/AddAdministration/{adminId}");
     }
 
-    private void DeleteAdministration(Administration administration)
+    private async Task DeleteAdministration(Administration administration)
     {
-		Administrations.Remove(administration);
+		_loading = true;
+		await AdminDataSevice.DeleteById(administration.Id);
+		Snackbar.Add("تم الحذف بنجاح", Severity.Success);
+
+		// Refresh the list after deletion
+		Administrations = await AdminDataSevice.GetAll();
+		_loading = false;
     }
 }

@@ -1,0 +1,75 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Student_Hostel_Management_System.Data;
+using Student_Hostel_Management_System.Data.Entites;
+using Student_Hostel_Management_System.Services.Interfaces;
+
+namespace Student_Hostel_Management_System.Services
+{
+    public class AdminstrationDataService : IAdminstrationDataService
+    {
+        // This class is responsible for managing the administration data.
+
+        private readonly ApplicationDbContext _dbContext;
+
+        public AdminstrationDataService(ApplicationDbContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
+
+        public async Task<Administration> Add(Administration entity)
+        {
+            var addedAdmin =  await _dbContext.Administrations.AddAsync(entity);
+            await SaveChangesAsync();
+            return addedAdmin.Entity;
+        }
+
+        public async Task<Administration> DeleteById(Guid id)
+        {
+            var admin = await _dbContext.Administrations.FirstOrDefaultAsync(ad => ad.Id == id);
+            if (admin == null)
+            {
+                throw new ArgumentException($"No administration found with id {id}");
+            }
+            _dbContext.Administrations.Remove(admin);
+            await SaveChangesAsync();
+            return admin;
+        }
+
+        public Task<List<Administration>> GetAll()
+        {
+            return _dbContext.Administrations.Include(ad => ad.Students).ToListAsync();
+        }
+
+        public async Task<Administration?> GetById(Guid id)
+        {
+            var admin = await _dbContext.Administrations.Include(ad => ad.Students).FirstOrDefaultAsync(ad => ad.Id == id);
+            return admin;
+        }
+
+        public async Task<Administration> Update(Guid id, Administration updatedEntity)
+        {
+            var admin = _dbContext.Administrations.Include(ad=>ad.Students).FirstOrDefault(ad => ad.Id == id);
+            
+            if (admin == null)
+            {
+                throw new ArgumentException($"No administration found with id {id}");
+            }
+
+            admin.NID = updatedEntity.NID;
+            admin.Name = updatedEntity.Name;
+            admin.Phone = updatedEntity.Phone;
+            admin.Email = updatedEntity.Email;
+            admin.Discription = updatedEntity.Discription;
+
+            _dbContext.Administrations.Update(admin);
+            _dbContext.Entry(admin).State = EntityState.Modified;
+            await SaveChangesAsync();
+            return admin;
+        }
+
+        private Task SaveChangesAsync()
+        {
+            return _dbContext.SaveChangesAsync();
+        }
+    }
+}

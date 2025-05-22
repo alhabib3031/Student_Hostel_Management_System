@@ -1,9 +1,15 @@
 ﻿@page "/AddAdministration"
 @page "/AddAdministration/{Id:Guid}"
+
 @using Student_Hostel_Management_System.Data.Entites
-@rendermode InteractiveServer
+@using Student_Hostel_Management_System.Services.Interfaces
 @inject NavigationManager NavigationManager
-<h3>Add Administration</h3>
+@inject IAdminstrationDataService AdminDataSevice
+@inject ISnackbar Snackbar
+
+@rendermode InteractiveServer
+
+<h3>@(IsEditMode ? "Edit Administration" : "Add Administration")</h3>
 
 <MudTextField @bind-Value="Administration.NID" Label="NID" />
 <MudTextField @bind-Value="Administration.Name" Label="Name" />
@@ -11,24 +17,55 @@
 <MudTextField @bind-Value="Administration.Email" Label="Email" />
 <MudTextField @bind-Value="Administration.Discription" Label="Discription" />
 <br />
-<MudButton OnClick="Save" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Save" Color="Color.Primary">حفظ</MudButton>
-
+<MudButton OnClick="Save" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Save" Color="Color.Primary">
+	@(IsEditMode ? "تعديل" : "حفظ")
+</MudButton>
 @code {
 
 	[Parameter]
-	public Guid Id { get; set; }
+	public string Id { get; set; } = string.Empty;
+
 	private Administration Administration { get; set; } = new Administration();
+
+	private bool IsEditMode;
 
 	protected override async Task OnInitializedAsync()
 	{
-		await Task.Delay(500);
-		Administration = new Administration();
+
+		Snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomCenter;
+		IsEditMode = !string.IsNullOrEmpty(Id);
+		if (IsEditMode)
+		{
+			var existing = await AdminDataSevice.GetById(Guid.Parse(Id));
+			if (existing != null)
+			{
+				Administration = existing;
+			}
+			else
+			{
+				// Optionally navigate away or show an error
+				NavigationManager.NavigateTo("/NotFound");
+			}
+		}
+
 	}
 
 	private async Task Save()
 	{
-		// Simulate saving the data
-		await Task.Delay(500);
-		Console.WriteLine($"Saved: {Administration.NID}, {Administration.Name}, {Administration.Phone}, {Administration.Email}, {Administration.Discription}");
+		if (IsEditMode)
+		{
+			await AdminDataSevice.Update(Guid.Parse(Id),Administration);
+			// Optionally navigate back to the list or show a success message
+			// add snackbar message
+			Snackbar.Add("تم التعديل بنجاح", Severity.Success);
+		}
+		else
+		{
+			await AdminDataSevice.Add(Administration);
+			Snackbar.Add("تم الاضافة بنجاح", Severity.Success);
+			Administration = new Administration(); // Reset the form after adding
+		}
+
 	}
+
 }

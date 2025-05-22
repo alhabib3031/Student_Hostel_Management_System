@@ -1,6 +1,15 @@
 ﻿@inherits LayoutComponentBase
 
 <MudThemeProvider />
+@* Needed for snackbars *@
+<MudSnackbarProvider />
+
+
+<MudPopoverProvider />
+
+@* Needed for dialogs *@
+<MudDialogProvider />
+
 <MudLayout>
     <MudAppBar Elevation="1">
         <MudStaticNavDrawerToggle DrawerId="nav-drawer" Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" />
