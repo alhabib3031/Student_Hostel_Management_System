@@ -1,0 +1,116 @@
+﻿@page "/StudentList"
+@using Student_Hostel_Management_System.Data.Entites
+@using Student_Hostel_Management_System.Services.Interfaces
+@rendermode InteractiveServer
+@inject NavigationManager NavigationManager
+@inject IAdminstrationDataService AdminDataSevice
+@inject IStudentsDataService StudentsDataService
+@inject ISnackbar Snackbar
+@inject IDialogService DialogService
+
+
+<h3>صفحة التحكم في بيانات الطالب</h3>
+
+<MudTable Items="@Students" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading" LoadingProgressColor="Color.Info">
+    <ToolBarContent>
+        <MudSpacer />
+        <MudButton @onclick="AddStudentAsync" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Add" Color="Color.Primary">
+            إضافة طالب
+        </MudButton>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Id</MudTh>
+        <MudTh>StudentId</MudTh>
+        <MudTh>Name</MudTh>
+        <MudTh>Phone</MudTh>
+        <MudTh>Email</MudTh>
+        <MudTh>Address</MudTh>
+        <MudTh>AdministrationId</MudTh>
+        <MudTh>Operations</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Id">@context.Id</MudTd>
+        <MudTd DataLabel="StudentId">@context.StudentId</MudTd>
+        <MudTd DataLabel="Name">@context.Name</MudTd>
+        <MudTd DataLabel="Phone">@context.Phone</MudTd>
+        <MudTd DataLabel="Email">@context.Email</MudTd>
+        <MudTd DataLabel="Address">@context.Address</MudTd>
+        <MudTd DataLabel="AdministrationId">@context.AdministrationId</MudTd>
+        <MudTd>
+            <MudButton Color="Color.Primary"
+                       OnClick="() => EditStudent(context.Id)"
+                       Variant="Variant.Filled"
+                       StartIcon="@Icons.Material.Filled.Edit" />
+
+            <MudButton Color="Color.Error"
+                       OnClick="() => DeleteStudent(context)"
+                       Variant="Variant.Filled"
+                       StartIcon="@Icons.Material.Filled.Delete" />
+        </MudTd>
+    </RowTemplate>
+</MudTable>
+
+
+
+@code {
+
+    private List<Student> Students { get; set; } = new List<Student>();
+    private bool _loading;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomCenter;
+
+        _loading = true;
+        await Task.Delay(300); // لتجربة التحميل
+        Students = await StudentsDataService.GetAll();
+        _loading = false;
+    }
+
+    private Task AddStudentAsync()
+    {
+        var options = new DialogOptions
+            {
+                MaxWidth = MaxWidth.Medium, // أو Small, Large, ExtraLarge
+                FullWidth = true,           // ليأخذ العرض الكامل المتاح داخل MaxWidth
+                CloseOnEscapeKey = true
+            };
+        return DialogService.ShowAsync<OperationsOnStudent>("إضافة طالب", options);
+    }
+
+    private void EditStudent(Guid studentId)
+    {
+        // Navigate to the edit student page
+        NavigationManager.NavigateTo($"/OperationsOnStudent/{studentId}");
+    }
+
+    private async Task DeleteStudent(Student student)
+    {
+        _loading = true;
+        await StudentsDataService.DeleteById(student.Id);
+        Snackbar.Add("تم الحذف بنجاح", Severity.Success);
+
+        // Refresh the list after deletion
+        Students = await StudentsDataService.GetAll();
+        _loading = false;
+    }
+
+
+    IList<IBrowserFile> files = new List<IBrowserFile>();
+    private void UploadFiles(IReadOnlyList<IBrowserFile> files)
+    {
+        foreach (var file in files)
+        {
+            this.files.Add(file);
+        }
+        //TODO upload the files to the server
+    }
+
+    private void UploadFiles2(IBrowserFile file)
+    {
+        files.Add(file);
+        //TODO upload the files to the server
+    }
+
+    
+}

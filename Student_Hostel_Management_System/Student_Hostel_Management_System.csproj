@@ -7,6 +7,12 @@
     <UserSecretsId>aspnet-Student_Hostel_Management_System-c4cafd14-67df-4efa-9b89-a180ae7142b1</UserSecretsId>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Include="wwwroot\Images\images.jpg" />
+    <None Include="wwwroot\Images\images.png" />
+    <None Include="wwwroot\Images\UBC_Accommodations_Accessible_Suites_Studio_Kitchen_750x500-750x500.jpg" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="9.*" />
@@ -15,11 +21,6 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.*" />
     <PackageReference Include="MudBlazor" Version="8.*" />
     <PackageReference Include="Extensions.MudBlazor.StaticInput" Version="3.*" />
-  </ItemGroup>
-
-
-  <ItemGroup>
-    <Folder Include="Components\Pages\StudentComponents\" />
   </ItemGroup>
 
 </Project>

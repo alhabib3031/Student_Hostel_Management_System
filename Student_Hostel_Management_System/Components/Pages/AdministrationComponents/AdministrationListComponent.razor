@@ -3,7 +3,6 @@
 @using Student_Hostel_Management_System.Services.Interfaces
 @rendermode InteractiveServer
 @inject NavigationManager NavigationManager
-@inject AdministrationDesignServices administrationDesignServices
 @inject IAdminstrationDataService AdminDataSevice
 @inject IStudentsDataService StudentsDataService 
 @inject ISnackbar Snackbar
@@ -62,8 +61,6 @@
     {
         Snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomCenter;
 
-        administrationDesignServices = new AdministrationDesignServices();
-
         _loading = true;
         await Task.Delay(500); // لتجربة التحميل
         Administrations = await AdminDataSevice.GetAll();
@@ -73,13 +70,13 @@
     private void AddAdministration()
     {
         // Navigate to the add student page
-        NavigationManager.NavigateTo("/AddAdministration");
+        NavigationManager.NavigateTo("/OperationsOnAdmin");
     }
 
     private void EditAdministration(Guid adminId)
     {
         // Navigate to the edit student page
-        NavigationManager.NavigateTo($"/AddAdministration/{adminId}");
+        NavigationManager.NavigateTo($"/OperationsOnAdmin/{adminId}");
     }
 
     private async Task DeleteAdministration(Administration administration)

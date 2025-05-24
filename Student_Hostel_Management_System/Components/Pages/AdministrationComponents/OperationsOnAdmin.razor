@@ -1,5 +1,5 @@
-﻿@page "/AddAdministration"
-@page "/AddAdministration/{Id:Guid}"
+﻿@page "/OperationsOnAdmin"
+@page "/OperationsOnAdmin/{Id:Guid}"
 
 @using Student_Hostel_Management_System.Data.Entites
 @using Student_Hostel_Management_System.Services.Interfaces
@@ -11,11 +11,14 @@
 
 <h3>@(IsEditMode ? "Edit Administration" : "Add Administration")</h3>
 
-<MudTextField @bind-Value="Administration.NID" Label="NID" />
-<MudTextField @bind-Value="Administration.Name" Label="Name" />
-<MudTextField @bind-Value="Administration.Phone" Label="Phone" />
-<MudTextField @bind-Value="Administration.Email" Label="Email" />
-<MudTextField @bind-Value="Administration.Discription" Label="Discription" />
+<MudPaper Class="d-flex flex-row flex-grow-1 gap-4" Elevation="0">
+	<MudTextField @bind-Value="Administration.NID" Label="الرقم الوظيفي" />
+	<MudTextField @bind-Value="Administration.Name" Label="الإسم" />
+	<MudTextField @bind-Value="Administration.Phone" Label="رقم الهاتف" />
+	<MudTextField @bind-Value="Administration.Email" Label="البريد الإلكتورني" />
+	<MudTextField @bind-Value="Administration.Discription" Label="الوصف" />
+</MudPaper>
+
 <br />
 <MudButton OnClick="Save" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Save" Color="Color.Primary">
 	@(IsEditMode ? "تعديل" : "حفظ")

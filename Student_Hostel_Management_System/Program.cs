@@ -22,8 +22,8 @@ builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityUserAccessor>();
 builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
+
 //=====================Added Services=====================//
-builder.Services.AddScoped<AdministrationDesignServices>();
 builder.Services.AddScoped<IAdminstrationDataService, AdminstrationDataService>();
 builder.Services.AddScoped<IStudentsDataService, StudentsDataService>();
 
