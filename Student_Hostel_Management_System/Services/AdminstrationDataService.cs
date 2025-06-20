@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Humanizer.DateTimeHumanizeStrategy;
+using Microsoft.EntityFrameworkCore;
 using Student_Hostel_Management_System.Data;
 using Student_Hostel_Management_System.Data.Entites;
 using Student_Hostel_Management_System.Services.Interfaces;
@@ -9,6 +10,13 @@ namespace Student_Hostel_Management_System.Services
     {
         // This class is responsible for managing the administration data.
 
+        // Read About Async Await Pattern in C#.
+
+        // Race Comdition in C# is a situation where two or more threads access shared data and try to change it at the same time.
+
+        // Injection of the ApplicationDbContext to interact with the database.
+
+
         private readonly ApplicationDbContext _dbContext;
 
         public AdminstrationDataService(ApplicationDbContext dbContext)
@@ -16,9 +24,10 @@ namespace Student_Hostel_Management_System.Services
             _dbContext = dbContext;
         }
 
+        // WPF // async await pattern for asynchronous operations. 
         public async Task<Administration> Add(Administration entity)
         {
-            var addedAdmin =  await _dbContext.Administrations.AddAsync(entity);
+            var addedAdmin = await _dbContext.Administrations.AddAsync(entity);
             await SaveChangesAsync();
             return addedAdmin.Entity;
         }

@@ -62,7 +62,7 @@
         Snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomCenter;
 
         _loading = true;
-        await Task.Delay(500); // لتجربة التحميل
+        // await Task.Delay(500); لتجربة التحميل
         Administrations = await AdminDataSevice.GetAll();
         _loading = false;
     }
