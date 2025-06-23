@@ -15,40 +15,43 @@
 	<TitleContent>
 		<h3>@(IsEditMode ? "تعديل بيانات الطالب" : "إضافة طالب جديد")</h3>
 	</TitleContent>
+	<DialogContent>
+		<MudPaper Class="p-4" dir="rtl">
+			<MudTextField @bind-Value="Student.StudentId" Label="الرقم الدراسي" />
+			<MudTextField @bind-Value="Student.Name" Label="الاسم" />
+			<MudTextField @bind-Value="Student.Phone" Label="رقم الهاتف" />
+			<MudTextField @bind-Value="Student.Email" Label="البريد الإلكتروني" />
+			<MudTextField @bind-Value="Student.Address" Label="العنوان" />
+			<MudTextField @bind-Value="Student.AdministrationId" Label="رقم مدير النزل" />
+		</MudPaper>
+	</DialogContent>
+	<DialogActions>
+		<MudPaper Class="d-flex flex-row flex-grow-1 gap-4" Elevation="0">
+			<MudFileUpload T="IBrowserFile"
+						   Accept=".pdf"
+						   FilesChanged="UploadFiles2"
+						   MaximumFileCount="100">
+				<ActivatorContent>
+					<MudButton Variant="Variant.Filled"
+							   Color="Color.Primary"
+							   StartIcon="@Icons.Material.Filled.CloudUpload">
+						Only .pdf files
+					</MudButton>
+				</ActivatorContent>
+			</MudFileUpload>
+
+			<MudButton OnClick="Save" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Save" Color="Color.Success">
+				@(IsEditMode ? "تعديل" : "حفظ")
+			</MudButton>
+
+		</MudPaper>
+	</DialogActions>
 </MudDialog>
 
 <br />
-<MudPaper Class="p-4" dir="rtl">
-	<MudTextField @bind-Value="Student.StudentId" Label="الرقم الدراسي" />
-	<MudTextField @bind-Value="Student.Name" Label="الاسم" />
-	<MudTextField @bind-Value="Student.Phone" Label="رقم الهاتف" />
-	<MudTextField @bind-Value="Student.Email" Label="البريد الإلكتروني" />
-	<MudTextField @bind-Value="Student.Address" Label="العنوان" />
-	<MudTextField @bind-Value="Student.AdministrationId" Label="رقم مدير النزل" />
-</MudPaper>
-
 <MudSpacer />
 <br />
 
-<MudPaper Class="d-flex flex-row flex-grow-1 gap-4" Elevation="0">
-	<MudFileUpload T="IBrowserFile"
-				   Accept=".pdf"
-				   FilesChanged="UploadFiles2"
-				   MaximumFileCount="100">
-		<ActivatorContent>
-			<MudButton Variant="Variant.Filled"
-					   Color="Color.Primary"
-					   StartIcon="@Icons.Material.Filled.CloudUpload">
-				Only .pdf files
-			</MudButton>
-		</ActivatorContent>
-	</MudFileUpload>
-
-	<MudButton OnClick="Save" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Save" Color="Color.Success">
-		@(IsEditMode ? "تعديل" : "حفظ")
-	</MudButton>
-
-</MudPaper>
 
 @if (files != null)
 {

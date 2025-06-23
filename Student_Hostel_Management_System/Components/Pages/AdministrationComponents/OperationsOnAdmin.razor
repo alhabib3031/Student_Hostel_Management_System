@@ -9,24 +9,38 @@
 
 @rendermode InteractiveServer
 
-<h3>@(IsEditMode ? "Edit Administration" : "Add Administration")</h3>
-
-<MudPaper Class="d-flex flex-row flex-grow-1 gap-4" Elevation="0">
-	<MudTextField @bind-Value="Administration.NID" Label="الرقم الوظيفي" />
-	<MudTextField @bind-Value="Administration.Name" Label="الإسم" />
-	<MudTextField @bind-Value="Administration.Phone" Label="رقم الهاتف" />
-	<MudTextField @bind-Value="Administration.Email" Label="البريد الإلكتورني" />
-	<MudTextField @bind-Value="Administration.Discription" Label="الوصف" />
-</MudPaper>
+<MudDialog>
+	<TitleContent>
+		<h3>@(IsEditMode ? "تعديل مدير" : "إضافة مدير")</h3>
+	</TitleContent>
+	<DialogContent>
+		<MudPaper Class="p-4" dir="rtl">
+			<MudTextField @bind-Value="Administration.NID" Label="الرقم الوظيفي" />
+			<MudTextField @bind-Value="Administration.Name" Label="الإسم" />
+			<MudTextField @bind-Value="Administration.Phone" Label="رقم الهاتف" />
+			<MudTextField @bind-Value="Administration.Email" Label="البريد الإلكتورني" />
+			<MudTextField @bind-Value="Administration.Discription" Label="الوصف" />
+		</MudPaper>
+	</DialogContent>
+	<DialogActions>
+		<MudPaper Class="d-flex flex-row flex-grow-1 gap-4" Elevation="0">
+			<MudButton OnClick="Save" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Save" Color="Color.Primary">
+				@(IsEditMode ? "تعديل" : "حفظ")
+			</MudButton>
+		</MudPaper>
+	</DialogActions>
+</MudDialog>
 
 <br />
-<MudButton OnClick="Save" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Save" Color="Color.Primary">
-	@(IsEditMode ? "تعديل" : "حفظ")
-</MudButton>
+<MudSpacer />
+<br />
+
 @code {
 
 	[Parameter]
 	public string Id { get; set; } = string.Empty;
+	[Parameter]
+	public Guid? AdminId { get; set; }
 
 	private Administration Administration { get; set; } = new Administration();
 

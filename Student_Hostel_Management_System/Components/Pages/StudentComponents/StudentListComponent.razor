@@ -38,7 +38,7 @@
         <MudTd DataLabel="AdministrationId">@context.AdministrationId</MudTd>
         <MudTd>
             <MudButton Color="Color.Primary"
-                       OnClick="() => EditStudent(context.Id)"
+                       OnClick="() => EditStudentAsync(context.Id)"
                        Variant="Variant.Filled"
                        StartIcon="@Icons.Material.Filled.Edit" />
 
@@ -67,7 +67,7 @@
         _loading = false;
     }
 
-    private Task AddStudentAsync()
+    private async Task AddStudentAsync()
     {
         var options = new DialogOptions
             {
@@ -75,13 +75,29 @@
                 FullWidth = true,           // ليأخذ العرض الكامل المتاح داخل MaxWidth
                 CloseOnEscapeKey = true
             };
-        return DialogService.ShowAsync<OperationsOnStudent>("إضافة طالب", options);
+        await DialogService.ShowAsync<OperationsOnStudent>("إضافة طالب", options);
     }
 
-    private void EditStudent(Guid studentId)
+    private async Task EditStudentAsync(Guid studentId)
     {
-        // Navigate to the edit student page
-        NavigationManager.NavigateTo($"/OperationsOnStudent/{studentId}");
+        var parameters = new DialogParameters { ["Id"] = studentId.ToString() };
+
+        var options = new DialogOptions
+            {
+                MaxWidth = MaxWidth.Medium,
+                FullWidth = true,
+                CloseOnEscapeKey = true
+            };
+
+        var dialog = DialogService.Show<OperationsOnStudent>("تعديل طالب", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            // تم حفظ التعديلات داخل الـ Dialog — نعيد تحميل القائمة
+            Students = await StudentsDataService.GetAll();
+            StateHasChanged(); // لكي يتم تحديث الجدول في الواجهة
+        }
     }
 
     private async Task DeleteStudent(Student student)

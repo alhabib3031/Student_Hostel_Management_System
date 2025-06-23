@@ -8,6 +8,7 @@ using Student_Hostel_Management_System.Components.Pages.AdministrationComponents
 using Student_Hostel_Management_System.Data;
 using Student_Hostel_Management_System.Services;
 using Student_Hostel_Management_System.Services.Interfaces;
+using Syncfusion.Blazor;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +28,8 @@ builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuth
 //=====================Added Services=====================//
 builder.Services.AddScoped<IAdminstrationDataService, AdminstrationDataService>();
 builder.Services.AddScoped<IStudentsDataService, StudentsDataService>();
+
+builder.Services.AddSyncfusionBlazor();
 
 //TODO: // DI Dependency Injection  Read Read Read !
 

@@ -6,6 +6,8 @@
 @inject IAdminstrationDataService AdminDataSevice
 @inject IStudentsDataService StudentsDataService 
 @inject ISnackbar Snackbar
+@inject IDialogService DialogService
+@using Syncfusion.Blazor.Layouts
 
 
 <h3>Administration List</h3>
@@ -15,7 +17,7 @@
         <MudSpacer />
 
         <MudButton Color="Color.Primary"
-        OnClick="AddAdministration"
+        OnClick="AddAdministrationAsync"
         Variant="Variant.Filled"
         StartIcon="@Icons.Material.Filled.Add">
             إضافة مدير
@@ -40,9 +42,9 @@
         <MudTd DataLabel="Discription">@context.Discription</MudTd>
         <MudTd>
             <MudButton Color="Color.Primary"
-            OnClick="() => EditAdministration(context.Id)"
-            Variant="Variant.Filled"
-            StartIcon="@Icons.Material.Filled.Edit" />
+                       OnClick="() => EditAdministrationAsync(context.Id)"
+                        Variant="Variant.Filled"
+                        StartIcon="@Icons.Material.Filled.Edit" />
 
             <MudButton Color="Color.Error"
             OnClick="() => DeleteAdministration(context)"
@@ -67,16 +69,37 @@
         _loading = false;
     }
 
-    private void AddAdministration()
+    private async Task AddAdministrationAsync()
     {
-        // Navigate to the add student page
-        NavigationManager.NavigateTo("/OperationsOnAdmin");
+        var options = new DialogOptions
+            {
+                MaxWidth = MaxWidth.Medium, // أو Small, Large, ExtraLarge
+                FullWidth = true,           // ليأخذ العرض الكامل المتاح داخل MaxWidth
+                CloseOnEscapeKey = true
+            };
+        await DialogService.ShowAsync<OperationsOnAdmin>("إضافة مدير", options);
     }
 
-    private void EditAdministration(Guid adminId)
+    private async Task EditAdministrationAsync(Guid adminId)
     {
-        // Navigate to the edit student page
-        NavigationManager.NavigateTo($"/OperationsOnAdmin/{adminId}");
+        var parameters = new DialogParameters { ["Id"] = adminId.ToString() };
+
+        var options = new DialogOptions
+            {
+                MaxWidth = MaxWidth.Medium,
+                FullWidth = true,
+                CloseOnEscapeKey = true
+            };
+
+        var dialog = DialogService.Show<OperationsOnAdmin>("تعديل طالب", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            // تم حفظ التعديلات داخل الـ Dialog — نعيد تحميل القائمة
+            Administrations = await AdminDataSevice.GetAll();
+            StateHasChanged(); // لكي يتم تحديث الجدول في الواجهة
+        }
     }
 
     private async Task DeleteAdministration(Administration administration)
