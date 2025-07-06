@@ -18,6 +18,7 @@ namespace Student_Hostel_Management_System.Services
 
 
         private readonly ApplicationDbContext _dbContext;
+        //private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
 
         public AdminstrationDataService(ApplicationDbContext dbContext)
         {
@@ -51,13 +52,13 @@ namespace Student_Hostel_Management_System.Services
 
         public async Task<Administration?> GetById(Guid id)
         {
-            var admin = await _dbContext.Administrations.Include(ad => ad.Students).FirstOrDefaultAsync(ad => ad.Id == id);
+            var admin = await _dbContext.Administrations.Include(ad => ad.Students).FirstOrDefaultAsync(ad => ad.Id == id); // i can found list student by admin id also 
             return admin;
         }
 
         public async Task<Administration> Update(Guid id, Administration updatedEntity)
         {
-            var admin = _dbContext.Administrations.Include(ad=>ad.Students).FirstOrDefault(ad => ad.Id == id);
+            var admin = _dbContext.Administrations.Include(ad => ad.Students).FirstOrDefault(ad => ad.Id == id);
             
             if (admin == null)
             {

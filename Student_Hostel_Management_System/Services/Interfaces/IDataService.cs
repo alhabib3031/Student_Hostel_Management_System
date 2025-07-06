@@ -10,7 +10,7 @@
       //   public Task<List<string>> GetAll();
        
         //public Task<List<List<string>>> Count { get; }
-
+        
         public Task<T?> GetById(Guid id);
         public Task<T> Add(T entity);
 
@@ -19,6 +19,8 @@
         public Task<T> Update(Guid id,T updatedEntity);
 
         public Task<List<T>> GetAll();
+        
+        //UOW unit of work ==>
 
     }
 }

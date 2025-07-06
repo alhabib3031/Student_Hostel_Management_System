@@ -47,9 +47,9 @@
                         StartIcon="@Icons.Material.Filled.Edit" />
 
             <MudButton Color="Color.Error"
-            OnClick="() => DeleteAdministration(context)"
-            Variant="Variant.Filled"
-            StartIcon="@Icons.Material.Filled.Delete" />
+                OnClick="() => DeleteAdministration(context)"
+                Variant="Variant.Filled"
+                StartIcon="@Icons.Material.Filled.Delete" />
         </MudTd>
     </RowTemplate>
 </MudTable>
@@ -78,6 +78,7 @@
                 CloseOnEscapeKey = true
             };
         await DialogService.ShowAsync<OperationsOnAdmin>("إضافة مدير", options);
+        Administrations = await AdminDataSevice.GetAll();
     }
 
     private async Task EditAdministrationAsync(Guid adminId)
@@ -91,10 +92,10 @@
                 CloseOnEscapeKey = true
             };
 
-        var dialog = DialogService.Show<OperationsOnAdmin>("تعديل طالب", parameters, options);
+        var dialog = await DialogService.ShowAsync<OperationsOnAdmin>("تعديل طالب", parameters, options);
         var result = await dialog.Result;
 
-        if (!result.Canceled)
+        if (result != null && !result.Canceled)
         {
             // تم حفظ التعديلات داخل الـ Dialog — نعيد تحميل القائمة
             Administrations = await AdminDataSevice.GetAll();

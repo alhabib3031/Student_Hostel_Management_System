@@ -14,10 +14,10 @@
     <MudAppBar Elevation="1">
         <MudStaticNavDrawerToggle DrawerId="nav-drawer" Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" />
         <MudText Typo="Typo.h5" Class="ml-3">نظام تسجيل بيوت الطلاب</MudText>
-        <MudButton OnClick="@(() => NavigationManager.NavigateTo("/OperationsOnStudent"))"
-        StartIcon="@Icons.Material.Filled.Person"
-        Variant="Variant.Filled"
-        Color="Color.Primary">تسجيل</MudButton>
+        @* <MudButton OnClick="@(() => NavigationManager.NavigateTo("/OperationsOnStudent"))" *@
+        @* StartIcon="@Icons.Material.Filled.Person" *@
+        @* Variant="Variant.Filled" *@
+        @* Color="Color.Primary">تسجيل</MudButton> *@
     </MudAppBar>
     <MudDrawer id="nav-drawer" @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2" Anchor="Anchor.End">
         <NavMenu />

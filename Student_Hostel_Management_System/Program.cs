@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using MudBlazor.Services;
 using Student_Hostel_Management_System.Components;
 using Student_Hostel_Management_System.Components.Account;
@@ -47,8 +48,15 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 // Action = Lambda expression to configure the DbContext with SQL Server.
 
-builder.Services.AddDbContext<ApplicationDbContext>(tre =>
-    tre.UseSqlServer(connectionString));
+builder.Services.AddDbContext<ApplicationDbContext>(option =>
+    option.UseSqlServer(connectionString,
+    sqlServerOptionsAction: SqlOperation =>
+    {
+        SqlOperation.EnableRetryOnFailure(
+            maxRetryCount: 5,
+            maxRetryDelay: TimeSpan.FromSeconds(30),
+            errorNumbersToAdd: null);
+    }));
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -76,7 +84,8 @@ else
 }
 
 app.UseHttpsRedirection();
-
+app.UseAuthentication(); // ✅ ضروري للمصادقة
+app.UseAuthorization();  // ✅ ضروري للسماح / الرفض
 
 app.UseAntiforgery();
 

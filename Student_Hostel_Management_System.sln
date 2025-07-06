@@ -5,6 +5,13 @@ VisualStudioVersion = 17.13.35825.156
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Student_Hostel_Management_System", "Student_Hostel_Management_System\Student_Hostel_Management_System.csproj", "{D3EC0FED-85D6-463A-9CBA-4B81CF9CAA0F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Unit Test", "Unit Test", "{A4235256-37FC-493E-BAF0-491E7B3F0383}"
+	ProjectSection(SolutionItems) = preProject
+		compose.yaml = compose.yaml
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTest", "UnitTest\UnitTest.csproj", "{6899D177-2197-4341-B8F3-9D1D2F17702F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,9 +22,16 @@ Global
 		{D3EC0FED-85D6-463A-9CBA-4B81CF9CAA0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3EC0FED-85D6-463A-9CBA-4B81CF9CAA0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D3EC0FED-85D6-463A-9CBA-4B81CF9CAA0F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6899D177-2197-4341-B8F3-9D1D2F17702F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6899D177-2197-4341-B8F3-9D1D2F17702F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6899D177-2197-4341-B8F3-9D1D2F17702F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6899D177-2197-4341-B8F3-9D1D2F17702F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6899D177-2197-4341-B8F3-9D1D2F17702F} = {A4235256-37FC-493E-BAF0-491E7B3F0383}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5A797F5A-DBCA-489B-B8F3-17B8BBF51A6F}

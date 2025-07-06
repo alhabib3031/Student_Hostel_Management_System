@@ -89,10 +89,10 @@
                 CloseOnEscapeKey = true
             };
 
-        var dialog = DialogService.Show<OperationsOnStudent>("تعديل طالب", parameters, options);
+        var dialog = await DialogService.ShowAsync<OperationsOnStudent>("تعديل طالب", parameters, options);
         var result = await dialog.Result;
 
-        if (!result.Canceled)
+        if (result != null && !result.Canceled)
         {
             // تم حفظ التعديلات داخل الـ Dialog — نعيد تحميل القائمة
             Students = await StudentsDataService.GetAll();

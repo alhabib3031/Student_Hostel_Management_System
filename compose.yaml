@@ -1,0 +1,7 @@
+﻿services:
+  student_hostel_management_system:
+    image: student_hostel_management_system
+    build:
+      context: .
+      dockerfile: Student_Hostel_Management_System/Dockerfile
+
