@@ -8,24 +8,13 @@ namespace Student_Hostel_Management_System.Services
 {
     public class AdminstrationDataService : IAdminstrationDataService
     {
-        // This class is responsible for managing the administration data.
-
-        // Read About Async Await Pattern in C#.
-
-        // Race Comdition in C# is a situation where two or more threads access shared data and try to change it at the same time.
-
-        // Injection of the ApplicationDbContext to interact with the database.
-
-
         private readonly ApplicationDbContext _dbContext;
-        //private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
 
         public AdminstrationDataService(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
         }
 
-        // WPF // async await pattern for asynchronous operations. 
         public async Task<Admin> Add(Admin entity)
         {
             var addedAdmin = await _dbContext.Administrations.AddAsync(entity);
@@ -33,32 +22,63 @@ namespace Student_Hostel_Management_System.Services
             return addedAdmin.Entity;
         }
 
+        // حذف منطقي - لا يحذف من قاعدة البيانات فعلياً
         public async Task<Admin> DeleteById(Guid id)
         {
-            var admin = await _dbContext.Administrations.FirstOrDefaultAsync(ad => ad.Id == id);
+            var admin = await _dbContext.Administrations
+                .Include(ad => ad.Students.Where(s => !s.IsDeleted))
+                .FirstOrDefaultAsync(ad => ad.Id == id && !ad.IsDeleted);
+                
             if (admin == null)
             {
                 throw new ArgumentException($"No administration found with id {id}");
             }
-            _dbContext.Administrations.Remove(admin);
+
+            // تطبيق الحذف المنطقي على المدير
+            admin.IsDeleted = true;
+            admin.DeletedAt = DateTime.Now;
+
+            // تطبيق الحذف المنطقي على جميع الطلاب المرتبطين بهذا المدير
+            foreach (var student in admin.Students)
+            {
+                student.IsDeleted = true;
+                student.DeletedAt = DateTime.Now;
+            }
+
+            _dbContext.Administrations.Update(admin);
             await SaveChangesAsync();
             return admin;
         }
 
+        // إضافة دالة للحصول على عدد الطلاب المرتبطين بالمدير
+        public async Task<int> GetStudentsCountByAdminId(Guid adminId)
+        {
+            return await _dbContext.Students
+                .CountAsync(s => s.AdminId == adminId && !s.IsDeleted);
+        }
+
+        // تعديل GetAll لإرجاع المدراء غير المحذوفين فقط
         public Task<List<Admin>> GetAll()
         {
-            return _dbContext.Administrations.Include(ad => ad.Students).ToListAsync();
+            return _dbContext.Administrations
+                .Include(ad => ad.Students.Where(s => !s.IsDeleted))
+                .Where(ad => !ad.IsDeleted)
+                .ToListAsync();
         }
 
         public async Task<Admin?> GetById(Guid id)
         {
-            var admin = await _dbContext.Administrations.Include(ad => ad.Students).FirstOrDefaultAsync(ad => ad.Id == id); // i can found list student by admin id also 
+            var admin = await _dbContext.Administrations
+                .Include(ad => ad.Students.Where(s => !s.IsDeleted))
+                .FirstOrDefaultAsync(ad => ad.Id == id && !ad.IsDeleted);
             return admin;
         }
 
         public async Task<Admin> Update(Guid id, Admin updatedEntity)
         {
-            var admin = _dbContext.Administrations.Include(ad => ad.Students).FirstOrDefault(ad => ad.Id == id);
+            var admin = _dbContext.Administrations
+                .Include(ad => ad.Students.Where(s => !s.IsDeleted))
+                .FirstOrDefault(ad => ad.Id == id && !ad.IsDeleted);
             
             if (admin == null)
             {

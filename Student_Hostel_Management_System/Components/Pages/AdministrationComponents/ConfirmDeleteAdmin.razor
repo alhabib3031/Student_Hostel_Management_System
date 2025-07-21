@@ -1,0 +1,25 @@
+﻿@using MudBlazor
+@inject IMudDialogInstance MudDialog
+@rendermode InteractiveServer
+
+<MudDialog>
+    <TitleContent>
+        <h3>تأكيد الحذف</h3>
+    </TitleContent>
+    <DialogContent>
+        <MudText Typo="Typo.body1" Class="mt-2">
+            @Message
+        </MudText>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Default" OnClick="Cancel">إلغاء</MudButton>
+        <MudButton Color="Color.Error" OnClick="Confirm" Variant="Variant.Filled">حذف</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [Parameter] public string Message { get; set; } = "هل أنت متأكد؟";
+
+    private void Cancel() => MudDialog.Cancel();
+    private void Confirm() => MudDialog.Close(DialogResult.Ok(true));
+}

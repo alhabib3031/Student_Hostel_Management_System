@@ -9,6 +9,11 @@
         public string? Phone { get; set; }
         public string? Email { get; set; }
         public string? Description { get; set; }
+        
+        // إضافة خاصية الحذف المنطقي
+        public bool IsDeleted { get; set; } = false;
+        public DateTime? DeletedAt { get; set; }
+        
         public List<Student> Students { get; set; } = new();
     }
 }

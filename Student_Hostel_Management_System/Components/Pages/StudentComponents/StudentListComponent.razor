@@ -26,6 +26,7 @@
         <MudTh>البريد</MudTh>
         <MudTh>العنوانه</MudTh>
         <MudTh>البيت</MudTh>
+        <MudTh>تاريخ التعديل</MudTh>
         <MudTh>العمليات</MudTh>
     </HeaderContent>
     <RowTemplate>
@@ -36,6 +37,7 @@
         <MudTd DataLabel="Email">@context.Email</MudTd>
         <MudTd DataLabel="Address">@context.Address</MudTd>
         <MudTd DataLabel="AdminId">@context.Admin?.HostelNo</MudTd>
+        <MudTd DataLabel="LastModified">@context.LastModified.ToString("dd/MM/yyyy HH:mm")</MudTd>
         <MudTd>
             <MudButton Color="Color.Primary"
                        OnClick="() => EditStudentAsync(context.Id)"
@@ -74,8 +76,15 @@
                 FullWidth = true,           // ليأخذ العرض الكامل المتاح داخل MaxWidth
                 CloseOnEscapeKey = true
             };
-        await DialogService.ShowAsync<OperationsOnStudent>("إضافة طالب", options);
-        StateHasChanged();
+        var dialog = await DialogService.ShowAsync<OperationsOnStudent>("إضافة طالب", options);
+        var result = await dialog.Result;
+        
+        if (result is { Canceled: false })
+        {
+            // تم الإضافة — نعيد تحميل القائمة
+            Students = await StudentsDataService.GetAll();
+            StateHasChanged();
+        }
     }
 
     private async Task EditStudentAsync(Guid studentId)

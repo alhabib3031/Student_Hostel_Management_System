@@ -49,7 +49,7 @@
                         StartIcon="@Icons.Material.Filled.Edit" />
 
             <MudButton Color="Color.Error"
-                OnClick="() => DeleteAdministration(context)"
+                OnClick="() => ShowDeleteConfirmationDialog(context)"
                 Variant="Variant.Filled"
                 StartIcon="@Icons.Material.Filled.Delete" />
         </MudTd>
@@ -79,9 +79,14 @@
                 FullWidth = true,           // ليأخذ العرض الكامل المتاح داخل MaxWidth
                 CloseOnEscapeKey = true
             };
-        await DialogService.ShowAsync<OperationsOnAdmin>("إضافة مدير", options);
-        Administrations = await AdminDataSevice.GetAll();
-        StateHasChanged();
+        var dialog = await DialogService.ShowAsync<OperationsOnAdmin>("إضافة مدير", options);
+        var result = await dialog.Result;
+        
+        if (result is { Canceled: false })
+        {
+            Administrations = await AdminDataSevice.GetAll();
+            StateHasChanged();
+        }
     }
 
     private async Task EditAdministrationAsync(Guid adminId)
@@ -95,7 +100,7 @@
                 CloseOnEscapeKey = true
             };
 
-        var dialog = await DialogService.ShowAsync<OperationsOnAdmin>("تعديل طالب", parameters, options);
+        var dialog = await DialogService.ShowAsync<OperationsOnAdmin>("تعديل مدير", parameters, options);
         var result = await dialog.Result;
 
         if (result is { Canceled: false })
@@ -106,14 +111,69 @@
         }
     }
 
+    private async Task ShowDeleteConfirmationDialog(Admin admin)
+    {
+        var studentsCount = await AdminDataSevice.GetStudentsCountByAdminId(admin.Id);
+
+        string message;
+        if (studentsCount > 0)
+        {
+            message = $"هناك {studentsCount} طالب مرتبطين بالمدير '{admin.Name}'. سيتم حذف جميع الطلاب المرتبطين أيضاً. هل أنت متأكد من المتابعة؟";
+        }
+        else
+        {
+            message = $"هل أنت متأكد من حذف المدير '{admin.Name}'؟";
+        }
+
+        var parameters = new DialogParameters
+        {
+            ["Message"] = message
+        };
+
+        var options = new DialogOptions
+        {
+            CloseButton = true,
+            MaxWidth = MaxWidth.Small,
+            FullWidth = true
+        };
+
+        var dialog = await DialogService.ShowAsync<ConfirmDeleteAdmin>("تأكيد الحذف", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            await DeleteAdministration(admin);
+        }
+    }
+
+
     private async Task DeleteAdministration(Admin admin)
     {
-		_loading = true;
-		await AdminDataSevice.DeleteById(admin.Id);
-		Snackbar.Add("تم الحذف بنجاح", Severity.Success);
+        try
+        {
+            _loading = true;
+            await AdminDataSevice.DeleteById(admin.Id);
+            
+            var studentsCount = await AdminDataSevice.GetStudentsCountByAdminId(admin.Id);
+            if (studentsCount > 0)
+            {
+                Snackbar.Add($"تم حذف المدير و {studentsCount} طالب مرتبطين به بنجاح", Severity.Success);
+            }
+            else
+            {
+                Snackbar.Add("تم حذف المدير بنجاح", Severity.Success);
+            }
 
-		// Refresh the list after deletion
-		Administrations = await AdminDataSevice.GetAll();
-		_loading = false;
+            // Refresh the list after deletion
+            Administrations = await AdminDataSevice.GetAll();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"حدث خطأ أثناء الحذف: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _loading = false;
+        }
     }
 }
