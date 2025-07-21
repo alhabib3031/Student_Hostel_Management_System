@@ -2,13 +2,12 @@
 using Student_Hostel_Management_System.Data;
 using Student_Hostel_Management_System.Data.Entites;
 using Student_Hostel_Management_System.Services;
-using Xunit;
 
 namespace UnitTest
 {
     public class StudentTest
     {
-        private Administration administration;
+        // private Admin _admin;
         private static DbContextOptions<ApplicationDbContext> GetNewContextOptions()
         {
             return new DbContextOptionsBuilder<ApplicationDbContext>()
@@ -21,7 +20,7 @@ namespace UnitTest
         {
             // Arrange
             var options = GetNewContextOptions();
-            using var context = new ApplicationDbContext(options);
+            await using var context = new ApplicationDbContext(options);
             var service = new StudentsDataService(context);
 
             var student = new Student
@@ -32,7 +31,7 @@ namespace UnitTest
                 Phone = "0987654321",
                 StudentId = 123,
                 Address = "Test Address",
-                AdministrationId = Guid.NewGuid()
+                AdminId = Guid.NewGuid()
             };
 
             // Act
@@ -52,7 +51,7 @@ namespace UnitTest
         {
             // Arrange
             var options = GetNewContextOptions();
-            using var context = new ApplicationDbContext(options);
+            await using var context = new ApplicationDbContext(options);
             var service = new StudentsDataService(context);
 
             var studentId = Guid.NewGuid();
@@ -64,7 +63,7 @@ namespace UnitTest
                 Phone = "0987654321",
                 StudentId = 123,
                 Address = "Original Address",
-                AdministrationId = Guid.NewGuid()
+                AdminId = Guid.NewGuid()
             };
 
             await context.Students.AddAsync(existingStudent);
@@ -78,7 +77,7 @@ namespace UnitTest
                 Phone = "1234567890",
                 StudentId = 456,
                 Address = "Updated Address",
-                AdministrationId = Guid.NewGuid()
+                AdminId = Guid.NewGuid()
             };
 
             // Act
@@ -90,7 +89,7 @@ namespace UnitTest
             Assert.Equal(updatedStudent.Email, result.Email);
             Assert.Equal(updatedStudent.StudentId, result.StudentId);
             Assert.Equal(updatedStudent.Address, result.Address);
-            Assert.Equal(updatedStudent.AdministrationId, result.AdministrationId);
+            Assert.Equal(updatedStudent.AdminId, result.AdminId);
         }
 
         [Fact]
@@ -98,10 +97,10 @@ namespace UnitTest
         {
             // Arrange
             var options = GetNewContextOptions();
-            using var context = new ApplicationDbContext(options);
+            await using var context = new ApplicationDbContext(options);
             var service = new StudentsDataService(context);
 
-            var admin = new Administration
+            var admin = new Admin
             {
                 Id = Guid.NewGuid(),
                 Name = "Test Admin",
@@ -119,7 +118,7 @@ namespace UnitTest
                 Phone = "0987654321",
                 StudentId = 123,
                 Address = "Test Address",
-                AdministrationId = admin.Id
+                AdminId = admin.Id
             };
 
             await context.Students.AddAsync(student);
@@ -139,10 +138,10 @@ namespace UnitTest
         {
             // Arrange
             var options = GetNewContextOptions();
-            using var context = new ApplicationDbContext(options);
+            await using var context = new ApplicationDbContext(options);
             var service = new StudentsDataService(context);
 
-            var admin = new Administration
+            var admin = new Admin
             {
                 Id = Guid.NewGuid(),
                 Name = "Test Admin",
@@ -150,7 +149,10 @@ namespace UnitTest
                 Phone = "0987654321",
                 NID = 123456789
             };
-            
+
+            await context.Administrations.AddAsync(admin);
+            await context.SaveChangesAsync();
+
             var studentId = Guid.NewGuid();
             var student = new Student
             {
@@ -160,7 +162,7 @@ namespace UnitTest
                 Phone = "0987654321",
                 StudentId = 1234,
                 Address = "Test Address",
-                AdministrationId = admin.Id
+                AdminId = admin.Id
             };
 
             await context.Students.AddAsync(student);
@@ -174,14 +176,19 @@ namespace UnitTest
             Assert.Equal(student.Name, result.Name);
             Assert.Equal(student.StudentId, result.StudentId);
             Assert.Equal(student.Email, result.Email);
+            Assert.Equal(student.Phone, result.Phone);
+            Assert.Equal(student.Address, result.Address);
+            Assert.NotNull(result.Admin); // Ensure Admin is included
+            Assert.Equal(admin.Name, result.Admin.Name);
         }
+
 
         [Fact]
         public async Task GetById_ShouldReturnNull_WhenStudentDoesNotExist()
         {
             // Arrange
             var options = GetNewContextOptions();
-            using var context = new ApplicationDbContext(options);
+            await using var context = new ApplicationDbContext(options);
             var service = new StudentsDataService(context);
 
             // Act
@@ -196,8 +203,20 @@ namespace UnitTest
         {
             // Arrange
             var options = GetNewContextOptions();
-            using var context = new ApplicationDbContext(options);
+            await using var context = new ApplicationDbContext(options);
             var service = new StudentsDataService(context);
+
+            var admin = new Admin
+            {
+                Id = Guid.NewGuid(),
+                Name = "Test Admin",
+                Email = "admin@test.com",
+                Phone = "0987654321",
+                NID = 123456789
+            };
+
+            await context.Administrations.AddAsync(admin);
+            await context.SaveChangesAsync();
 
             var student1 = new Student
             {
@@ -207,7 +226,7 @@ namespace UnitTest
                 Phone = "0987654321",
                 StudentId = 123,
                 Address = "Address One",
-                AdministrationId = Guid.NewGuid()
+                AdminId = admin.Id
             };
 
             var student2 = new Student
@@ -218,7 +237,7 @@ namespace UnitTest
                 Phone = "1234567890",
                 StudentId = 456,
                 Address = "Address Two",
-                AdministrationId = Guid.NewGuid()
+                AdminId = admin.Id
             };
 
             await context.Students.AddRangeAsync(student1, student2);
@@ -232,14 +251,16 @@ namespace UnitTest
             Assert.Equal(2, results.Count);
             Assert.Contains(results, s => s.Name == "Student One");
             Assert.Contains(results, s => s.Name == "Student Two");
+            Assert.All(results, s => Assert.NotNull(s.Admin)); // Admin should be loaded
         }
+
 
         [Fact]
         public async Task DeleteById_ShouldThrowException_WhenStudentDoesNotExist()
         {
             // Arrange
             var options = GetNewContextOptions();
-            using var context = new ApplicationDbContext(options);
+            await using var context = new ApplicationDbContext(options);
             var service = new StudentsDataService(context);
 
             // Act & Assert
@@ -253,7 +274,7 @@ namespace UnitTest
         {
             // Arrange
             var options = GetNewContextOptions();
-            using var context = new ApplicationDbContext(options);
+            await using var context = new ApplicationDbContext(options);
             var service = new StudentsDataService(context);
 
             var updatedStudent = new Student
@@ -264,7 +285,7 @@ namespace UnitTest
                 Phone = "1234567890",
                 StudentId = 456,
                 Address = "Updated Address",
-                AdministrationId = Guid.NewGuid()
+                AdminId = Guid.NewGuid()
             };
 
             // Act & Assert

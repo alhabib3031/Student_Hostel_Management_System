@@ -2,7 +2,7 @@
 
 namespace Student_Hostel_Management_System.Services.Interfaces
 {
-    public interface IAdminstrationDataService: IDataService<Administration>
+    public interface IAdminstrationDataService: IDataService<Admin>
     {
     }
 }

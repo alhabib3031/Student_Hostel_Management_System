@@ -39,7 +39,7 @@ namespace Student_Hostel_Management_System.Services
         public async Task<List<Student>> GetAll()
         {
             var students = await _dbContext.Students
-                .Include(st => st.Administration)
+                .Include(st => st.Admin)
                 .ToListAsync();
             return students;
         }
@@ -47,7 +47,7 @@ namespace Student_Hostel_Management_System.Services
         public Task<Student?> GetById(Guid id)
         {
             var student = _dbContext.Students
-                .Include(st => st.Administration)
+                .Include(st => st.Admin)
                 .FirstOrDefaultAsync(st => st.Id == id);
             return student;
         }
@@ -64,7 +64,7 @@ namespace Student_Hostel_Management_System.Services
             student.Phone = updatedEntity.Phone;
             student.Email = updatedEntity.Email;
             student.Address = updatedEntity.Address;
-            student.AdministrationId = updatedEntity.AdministrationId;
+            student.AdminId = updatedEntity.AdminId;
             _dbContext.Students.Update(student);
             _dbContext.Entry(student).State = EntityState.Modified;
             return Task.FromResult(student);

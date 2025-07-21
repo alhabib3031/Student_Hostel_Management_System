@@ -2,11 +2,10 @@
 using Student_Hostel_Management_System.Data;
 using Student_Hostel_Management_System.Data.Entites;
 using Student_Hostel_Management_System.Services;
-using Xunit;
 
 namespace UnitTest
 {
-    public class AdministrationServiceTests
+    public class AdminTest
     {
         private static DbContextOptions<ApplicationDbContext> GetNewContextOptions()
         {
@@ -20,17 +19,17 @@ namespace UnitTest
         {
             // Arrange
             var options = GetNewContextOptions();
-            using var context = new ApplicationDbContext(options);
+            await using var context = new ApplicationDbContext(options);
             var service = new AdminstrationDataService(context);
 
-            var admin = new Administration
+            var admin = new Admin
             {
                 Id = Guid.NewGuid(),
                 Name = "Test Admin",
                 Email = "admin@test.com",
                 Phone = "0987654321",
                 NID = 123456789,
-                Discription = "Test Description"
+                Description = "Test Description"
             };
 
             // Act
@@ -49,31 +48,31 @@ namespace UnitTest
         {
             // Arrange
             var options = GetNewContextOptions();
-            using var context = new ApplicationDbContext(options);
+            await using var context = new ApplicationDbContext(options);
             var service = new AdminstrationDataService(context);
 
             var adminId = Guid.NewGuid();
-            var existingAdmin = new Administration
+            var existingAdmin = new Admin
             {
                 Id = adminId,
                 Name = "Original Admin",
                 Email = "admin@test.com",
                 Phone = "0987654321",
                 NID = 123456789,
-                Discription = "Test Description"
+                Description = "Test Description"
             };
 
             await context.Administrations.AddAsync(existingAdmin);
             await context.SaveChangesAsync();
 
-            var updatedAdmin = new Administration
+            var updatedAdmin = new Admin
             {
                 Id = adminId,
                 Name = "Updated Admin",
                 Email = "updated@test.com",
                 Phone = "1234567890",
                 NID = 987654321,
-                Discription = "Test Description"
+                Description = "Test Description"
             };
 
             // Act
@@ -92,18 +91,18 @@ namespace UnitTest
         {
             // Arrange
             var options = GetNewContextOptions();
-            using var context = new ApplicationDbContext(options);
+            await using var context = new ApplicationDbContext(options);
             var service = new AdminstrationDataService(context);
              
             var adminId = Guid.NewGuid();
-            var admin = new Administration
+            var admin = new Admin
             {
                 Id = adminId,
                 Name = "Admin to Delete",
                 Email = "delete@test.com",
                 Phone = "0987654321",
                 NID = 123456789,
-                Discription = "Test Description"
+                Description = "Test Description"
             };
 
             await context.Administrations.AddAsync(admin);
@@ -127,14 +126,14 @@ namespace UnitTest
             var service = new AdminstrationDataService(context);
 
             var adminId = Guid.NewGuid();
-            var admin = new Administration
+            var admin = new Admin
             {
                 Id = adminId,
                 Name = "Test Admin",
                 Email = "admin@test.com",
                 Phone = "0987654321",
                 NID = 123456789,
-                Discription = "Test Description"
+                Description = "Test Description"
             };
 
             await context.Administrations.AddAsync(admin);
@@ -154,7 +153,7 @@ namespace UnitTest
         {
             // Arrange
             var options = GetNewContextOptions();
-            using var context = new ApplicationDbContext(options);
+            await using var context = new ApplicationDbContext(options);
             var service = new AdminstrationDataService(context);
 
             // Act
@@ -169,27 +168,27 @@ namespace UnitTest
         {
             // Arrange
             var options = GetNewContextOptions();
-            using var context = new ApplicationDbContext(options);
+            await using var context = new ApplicationDbContext(options);
             var service = new AdminstrationDataService(context);
 
-            var admin1 = new Administration
+            var admin1 = new Admin
             {
                 Id = Guid.NewGuid(),
                 Name = "Admin One",
                 Email = "admin1@test.com",
                 Phone = "0987654321",
                 NID = 123456789,
-                Discription = "Test Description"
+                Description = "Test Description"
             };
 
-            var admin2 = new Administration
+            var admin2 = new Admin
             {
                 Id = Guid.NewGuid(),
                 Name = "Admin Two",
                 Email = "admin2@test.com",
                 Phone = "1234567890",
                 NID = 987654321,
-                Discription = "Test Description"
+                Description = "Test Description"
             };
 
             await context.Administrations.AddRangeAsync(admin1, admin2);
@@ -210,7 +209,7 @@ namespace UnitTest
         {
             // Arrange
             var options = GetNewContextOptions();
-            using var context = new ApplicationDbContext(options);
+            await using var context = new ApplicationDbContext(options);
             var service = new AdminstrationDataService(context);
 
             // Act & Assert
@@ -224,17 +223,17 @@ namespace UnitTest
         {
             // Arrange
             var options = GetNewContextOptions();
-            using var context = new ApplicationDbContext(options);
+            await using var context = new ApplicationDbContext(options);
             var service = new AdminstrationDataService(context);
 
-            var updatedAdmin = new Administration
+            var updatedAdmin = new Admin
             {
                 Id = Guid.NewGuid(),
                 Name = "Updated Admin",
                 Email = "updated@test.com",
                 Phone = "1234567890",
                 NID = 987654321,
-                Discription = "Test Description"
+                Description = "Test Description"
             };
 
             // Act & Assert

@@ -26,14 +26,14 @@ namespace Student_Hostel_Management_System.Services
         }
 
         // WPF // async await pattern for asynchronous operations. 
-        public async Task<Administration> Add(Administration entity)
+        public async Task<Admin> Add(Admin entity)
         {
             var addedAdmin = await _dbContext.Administrations.AddAsync(entity);
             await SaveChangesAsync();
             return addedAdmin.Entity;
         }
 
-        public async Task<Administration> DeleteById(Guid id)
+        public async Task<Admin> DeleteById(Guid id)
         {
             var admin = await _dbContext.Administrations.FirstOrDefaultAsync(ad => ad.Id == id);
             if (admin == null)
@@ -45,18 +45,18 @@ namespace Student_Hostel_Management_System.Services
             return admin;
         }
 
-        public Task<List<Administration>> GetAll()
+        public Task<List<Admin>> GetAll()
         {
             return _dbContext.Administrations.Include(ad => ad.Students).ToListAsync();
         }
 
-        public async Task<Administration?> GetById(Guid id)
+        public async Task<Admin?> GetById(Guid id)
         {
             var admin = await _dbContext.Administrations.Include(ad => ad.Students).FirstOrDefaultAsync(ad => ad.Id == id); // i can found list student by admin id also 
             return admin;
         }
 
-        public async Task<Administration> Update(Guid id, Administration updatedEntity)
+        public async Task<Admin> Update(Guid id, Admin updatedEntity)
         {
             var admin = _dbContext.Administrations.Include(ad => ad.Students).FirstOrDefault(ad => ad.Id == id);
             
@@ -69,7 +69,7 @@ namespace Student_Hostel_Management_System.Services
             admin.Name = updatedEntity.Name;
             admin.Phone = updatedEntity.Phone;
             admin.Email = updatedEntity.Email;
-            admin.Discription = updatedEntity.Discription;
+            admin.Description = updatedEntity.Description;
 
             _dbContext.Administrations.Update(admin);
             _dbContext.Entry(admin).State = EntityState.Modified;

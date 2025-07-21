@@ -1,41 +1,141 @@
 ﻿@inherits LayoutComponentBase
 @inject NavigationManager NavigationManager
-<MudThemeProvider />
-@* Needed for snackbars *@
+
+<MudThemeProvider Theme="MyCustomTheme" />
 <MudSnackbarProvider />
-
-
 <MudPopoverProvider />
-
-@* Needed for dialogs *@
 <MudDialogProvider />
 
 <MudLayout>
-    <MudAppBar Elevation="1">
-        <MudStaticNavDrawerToggle DrawerId="nav-drawer" Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" />
-        <MudText Typo="Typo.h5" Class="ml-3">نظام تسجيل بيوت الطلاب</MudText>
-        @* <MudButton OnClick="@(() => NavigationManager.NavigateTo("/OperationsOnStudent"))" *@
-        @* StartIcon="@Icons.Material.Filled.Person" *@
-        @* Variant="Variant.Filled" *@
-        @* Color="Color.Primary">تسجيل</MudButton> *@
+    <MudAppBar Elevation="4" Color="Color.Primary" Fixed="true">
+        <MudStaticNavDrawerToggle DrawerId="nav-drawer" 
+                                   Icon="@Icons.Material.Filled.Menu" 
+                                   Color="Color.Inherit" 
+                                   Edge="Edge.Start" 
+                                   Class="me-3" />
+        
+        <MudIcon Icon="@Icons.Material.Filled.School" 
+                 Class="me-2" 
+                 Color="Color.Inherit" 
+                 Size="Size.Large" />
+        
+        <MudText Typo="Typo.h5" 
+                 Class="flex-grow-1 fw-bold">
+            نظام إدارة بيوت الطلاب
+        </MudText>
+        
+        <MudSpacer />
+        
+        <AuthorizeView>
+            @*<Authorized>
+                <MudChip Icon="@Icons.Material.Filled.Person" 
+                         Color="Color.Secondary" 
+                         Size="Size.Medium"
+                         Class="me-2">
+                    @context.User.Identity?.Name
+                </MudChip>
+            </Authorized>*@
+            <NotAuthorized>
+                <MudButton StartIcon="@Icons.Material.Filled.Login"
+                          Color="Color.Secondary"
+                          Variant="Variant.Outlined"
+                          Size="Size.Small"
+                          Class="me-2"
+                          OnClick="@(() => NavigationManager.NavigateTo("/"))">
+                    تسجيل الدخول
+                </MudButton>
+            </NotAuthorized>
+        </AuthorizeView>
     </MudAppBar>
-    <MudDrawer id="nav-drawer" @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2" Anchor="Anchor.End">
+    
+    <MudDrawer id="nav-drawer" 
+               @bind-Open="_drawerOpen" 
+               ClipMode="DrawerClipMode.Always" 
+               Elevation="3" 
+               Anchor="Anchor.End"
+               Width="180px"
+               Variant="DrawerVariant.Responsive"
+               OpenMiniOnHover="true">
+        
+        <MudDrawerHeader Class="pa-6">
+            <MudStack AlignItems="AlignItems.Center" Spacing="2">
+                <MudAvatar Color="Color.Primary" Size="Size.Large" Class="mb-2">
+                    <MudIcon Icon="@Icons.Material.Filled.AccountBalance" Size="Size.Large" />
+                </MudAvatar>
+                <MudText Typo="Typo.h6" Class="text-center fw-bold" Color="Color.Primary">
+                    نظام الإدارة
+                </MudText>
+            </MudStack>
+        </MudDrawerHeader>
+        
+        <MudDivider Class="mb-0" />
         <NavMenu />
+        <MudDivider Class="mb-2" />
     </MudDrawer>
-    <MudMainContent Class="pt-16 pa-4">
-        @Body
+    
+    <MudMainContent Class="pt-20 pa-6">
+        <MudContainer MaxWidth="MaxWidth.ExtraExtraLarge" Class="pa-0">
+            @Body
+        </MudContainer>
     </MudMainContent>
 </MudLayout>
 
-
 <div id="blazor-error-ui" data-nosnippet>
-    An unhandled error has occurred.
-    <a href="." class="reload">Reload</a>
-    <span class="dismiss">🗙</span>
+    <MudAlert Severity="Severity.Error" 
+              Icon="@Icons.Material.Filled.Error"
+              Class="ma-4">
+        حدث خطأ غير متوقع في النظام
+        <MudButton OnClick="@(() => NavigationManager.NavigateTo(NavigationManager.Uri, true))"
+                   StartIcon="@Icons.Material.Filled.Refresh"
+                   Color="Color.Error"
+                   Size="Size.Small"
+                   Class="ms-2">
+            إعادة التحميل
+        </MudButton>
+    </MudAlert>
 </div>
 
 @code {
-    private bool _drawerOpen = true;
+    private bool _drawerOpen = false;
+    private string? currentUrl;
+
+    protected override void OnInitialized()
+    {
+        currentUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+    }
+
+    MudTheme MyCustomTheme = new()
+    {
+        PaletteLight = new PaletteLight()
+        {
+            Primary = "#1976d2",
+            Secondary = "#ff6f00",
+            AppbarBackground = "#1976d2",
+            Background = "#f5f5f5",
+            Surface = "#ffffff",
+            DrawerBackground = "#ffffff",
+            DrawerText = "rgba(0,0,0, 0.87)",
+            Success = "#4caf50",
+            Info = "#2196f3",
+            Warning = "#ff9800",
+            Error = "#f44336",
+        },
+        PaletteDark = new PaletteDark()
+        {
+            Primary = "#90caf9",
+            Secondary = "#ffb74d",
+            AppbarBackground = "#1976d2",
+            Background = "#121212",
+            Surface = "#1e1e1e",
+            DrawerBackground = "#1e1e1e",
+            DrawerText = "rgba(255,255,255, 0.87)",
+        },
+        Typography = new Typography()
+        {
+            Default = new DefaultTypography()
+            {
+                FontFamily = ["Cairo", "Segue UI", "Roboto", "Arial", "sans-serif"]
+            }
+        }
+    };
 }
-
-

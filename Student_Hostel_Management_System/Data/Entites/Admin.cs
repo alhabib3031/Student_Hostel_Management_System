@@ -1,14 +1,14 @@
 ﻿namespace Student_Hostel_Management_System.Data.Entites
 {
-    public class Student
+    public class Admin
     {
         public Guid Id { get; set; }
-        public int StudentId { get; set; }
+        public int NID { get; set; }
+        public short HostelNo { get; set; }
         public string? Name { get; set; }
         public string? Phone { get; set; }
         public string? Email { get; set; }
-        public string? Address { get; set; }
-        public Guid AdminId { get; set; }
-        public Admin? Admin { get; set; }
+        public string? Description { get; set; }
+        public List<Student> Students { get; set; } = new();
     }
 }

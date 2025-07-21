@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using MudBlazor.Services;
 using Student_Hostel_Management_System.Components;
-using Student_Hostel_Management_System.Components.Account;
 using Student_Hostel_Management_System.Components.Pages.AdministrationComponents;
 using Student_Hostel_Management_System.Data;
 using Student_Hostel_Management_System.Services;
@@ -22,9 +21,6 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddCascadingAuthenticationState();
 
-builder.Services.AddScoped<IdentityUserAccessor>();
-builder.Services.AddScoped<IdentityRedirectManager>();
-builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
 
 //=====================Added Services=====================//
 builder.Services.AddScoped<IAdminstrationDataService, AdminstrationDataService>();
@@ -60,12 +56,6 @@ builder.Services.AddDbContext<ApplicationDbContext>(option =>
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddSignInManager()
-    .AddDefaultTokenProviders();
-
-builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
 // we don't register services after this line !!!!!! but not always .
 
@@ -93,7 +83,6 @@ app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
-// Add additional endpoints required by the Identity /Account Razor components.
-app.MapAdditionalIdentityEndpoints();
+
 
 app.Run();

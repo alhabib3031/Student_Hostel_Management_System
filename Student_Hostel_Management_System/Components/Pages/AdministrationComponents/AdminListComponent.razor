@@ -1,4 +1,4 @@
-﻿@page "/AdministrationList"
+﻿@page "/AdminList"
 @using Student_Hostel_Management_System.Data.Entites
 @using Student_Hostel_Management_System.Services.Interfaces
 @rendermode InteractiveServer
@@ -10,7 +10,7 @@
 @using Syncfusion.Blazor.Layouts
 
 
-<h3>Administration List</h3>
+<h3>Admin List</h3>
 
 <MudTable Items="Administrations" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading" LoadingProgressColor="Color.Info">
     <ToolBarContent>
@@ -25,21 +25,23 @@
 
     </ToolBarContent>
     <HeaderContent>
-        <MudTh>Id</MudTh>
-        <MudTh>NID</MudTh>
-        <MudTh>Name</MudTh>
-        <MudTh>Phone</MudTh>
-        <MudTh>Email</MudTh>
-        <MudTh>Discription</MudTh>
-        <MudTh>Operations</MudTh>
+        @* <MudTh>المعرف الشخصي</MudTh> *@
+        <MudTh>الرقم الوظيفي</MudTh>
+        <MudTh>رقم النزل</MudTh>
+        <MudTh>الإسم</MudTh>
+        <MudTh>الهاتف</MudTh>
+        <MudTh>البريد</MudTh>
+        <MudTh>الوصف</MudTh>
+        <MudTh>العمليات</MudTh>
     </HeaderContent>
     <RowTemplate>
-        <MudTd DataLabel="Id">@context.Id</MudTd>
+        @* <MudTd DataLabel="Id">@context.Id</MudTd> *@
         <MudTd DataLabel="NID">@context.NID</MudTd>
+        <MudTd DataLabel="HostelNO">@context.HostelNo</MudTd>
         <MudTd DataLabel="Name">@context.Name</MudTd>
         <MudTd DataLabel="Phone">@context.Phone</MudTd>
         <MudTd DataLabel="Email">@context.Email</MudTd>
-        <MudTd DataLabel="Discription">@context.Discription</MudTd>
+        <MudTd DataLabel="Description">@context.Description</MudTd>
         <MudTd>
             <MudButton Color="Color.Primary"
                        OnClick="() => EditAdministrationAsync(context.Id)"
@@ -56,7 +58,7 @@
 
 @code {
 
-    private List<Administration> Administrations { get; set; } = new List<Administration>();
+    private List<Admin> Administrations { get; set; } = new List<Admin>();
     private bool _loading;
 
     protected override async Task OnInitializedAsync()
@@ -79,6 +81,7 @@
             };
         await DialogService.ShowAsync<OperationsOnAdmin>("إضافة مدير", options);
         Administrations = await AdminDataSevice.GetAll();
+        StateHasChanged();
     }
 
     private async Task EditAdministrationAsync(Guid adminId)
@@ -95,7 +98,7 @@
         var dialog = await DialogService.ShowAsync<OperationsOnAdmin>("تعديل طالب", parameters, options);
         var result = await dialog.Result;
 
-        if (result != null && !result.Canceled)
+        if (result is { Canceled: false })
         {
             // تم حفظ التعديلات داخل الـ Dialog — نعيد تحميل القائمة
             Administrations = await AdminDataSevice.GetAll();
@@ -103,10 +106,10 @@
         }
     }
 
-    private async Task DeleteAdministration(Administration administration)
+    private async Task DeleteAdministration(Admin admin)
     {
 		_loading = true;
-		await AdminDataSevice.DeleteById(administration.Id);
+		await AdminDataSevice.DeleteById(admin.Id);
 		Snackbar.Add("تم الحذف بنجاح", Severity.Success);
 
 		// Refresh the list after deletion

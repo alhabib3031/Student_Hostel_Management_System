@@ -10,7 +10,7 @@
 
 
 <h3>صفحة التحكم في بيانات الطالب</h3>
-
+<MudSpacer />
 <MudTable Items="@Students" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading" LoadingProgressColor="Color.Info">
     <ToolBarContent>
         <MudSpacer />
@@ -19,23 +19,23 @@
         </MudButton>
     </ToolBarContent>
     <HeaderContent>
-        <MudTh>Id</MudTh>
-        <MudTh>StudentId</MudTh>
-        <MudTh>Name</MudTh>
-        <MudTh>Phone</MudTh>
-        <MudTh>Email</MudTh>
-        <MudTh>Address</MudTh>
-        <MudTh>AdministrationId</MudTh>
-        <MudTh>Operations</MudTh>
+        @* <MudTh>Id</MudTh> *@
+        <MudTh>الرقم الجامعي</MudTh>
+        <MudTh>الإسم</MudTh>
+        <MudTh>الهاتف</MudTh>
+        <MudTh>البريد</MudTh>
+        <MudTh>العنوانه</MudTh>
+        <MudTh>البيت</MudTh>
+        <MudTh>العمليات</MudTh>
     </HeaderContent>
     <RowTemplate>
-        <MudTd DataLabel="Id">@context.Id</MudTd>
+        @* <MudTd DataLabel="Id">@context.Id</MudTd> *@
         <MudTd DataLabel="StudentId">@context.StudentId</MudTd>
         <MudTd DataLabel="Name">@context.Name</MudTd>
         <MudTd DataLabel="Phone">@context.Phone</MudTd>
         <MudTd DataLabel="Email">@context.Email</MudTd>
         <MudTd DataLabel="Address">@context.Address</MudTd>
-        <MudTd DataLabel="AdministrationId">@context.AdministrationId</MudTd>
+        <MudTd DataLabel="AdminId">@context.Admin?.HostelNo</MudTd>
         <MudTd>
             <MudButton Color="Color.Primary"
                        OnClick="() => EditStudentAsync(context.Id)"
@@ -53,7 +53,6 @@
 
 
 @code {
-
     private List<Student> Students { get; set; } = new List<Student>();
     private bool _loading;
 
@@ -76,6 +75,7 @@
                 CloseOnEscapeKey = true
             };
         await DialogService.ShowAsync<OperationsOnStudent>("إضافة طالب", options);
+        StateHasChanged();
     }
 
     private async Task EditStudentAsync(Guid studentId)
@@ -92,7 +92,7 @@
         var dialog = await DialogService.ShowAsync<OperationsOnStudent>("تعديل طالب", parameters, options);
         var result = await dialog.Result;
 
-        if (result != null && !result.Canceled)
+        if (result is { Canceled: false })
         {
             // تم حفظ التعديلات داخل الـ Dialog — نعيد تحميل القائمة
             Students = await StudentsDataService.GetAll();

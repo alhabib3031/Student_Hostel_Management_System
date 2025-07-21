@@ -7,6 +7,7 @@
 @inject NavigationManager NavigationManager
 @inject IAdminstrationDataService AdminDataSevice
 @inject IStudentsDataService StudentsDataService
+
 @inject ISnackbar Snackbar
 
 @rendermode InteractiveServer
@@ -22,19 +23,24 @@
 			<MudTextField @bind-Value="Student.Phone" Label="رقم الهاتف" />
 			<MudTextField @bind-Value="Student.Email" Label="البريد الإلكتروني" />
 			<MudTextField @bind-Value="Student.Address" Label="العنوان" />
-			<MudTextField @bind-Value="Student.AdministrationId" Label="رقم مدير النزل" />
+			<MudSelect @bind-Value="Student.AdminId" Label="مدير النزل">
+				@foreach (var admin in Administrations)
+				{
+					<MudSelectItem Value="@admin.Id">@admin.Name - Hostel @admin.HostelNo</MudSelectItem>
+				}
+			</MudSelect>
 		</MudPaper>
 	</DialogContent>
 	<DialogActions>
 		<MudPaper Class="d-flex flex-row flex-grow-1 gap-4" Elevation="0">
 			<MudFileUpload T="IBrowserFile"
-						   Accept=".pdf"
-						   FilesChanged="UploadFiles2"
-						   MaximumFileCount="100">
+			               Accept=".pdf"
+			               FilesChanged="UploadFiles2"
+			               MaximumFileCount="100">
 				<ActivatorContent>
 					<MudButton Variant="Variant.Filled"
-							   Color="Color.Primary"
-							   StartIcon="@Icons.Material.Filled.CloudUpload">
+					           Color="Color.Primary"
+					           StartIcon="@Icons.Material.Filled.CloudUpload">
 						Only .pdf files
 					</MudButton>
 				</ActivatorContent>
@@ -43,10 +49,10 @@
 			<MudButton OnClick="Save" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Save" Color="Color.Success">
 				@(IsEditMode ? "تعديل" : "حفظ")
 			</MudButton>
-
 		</MudPaper>
 	</DialogActions>
 </MudDialog>
+
 
 <br />
 <MudSpacer />
@@ -76,11 +82,16 @@
 
 	private bool IsEditMode;
 
+	private List<Admin> Administrations { get; set; } = new List<Admin>();
+
 	protected override async Task OnInitializedAsync()
 	{
-
 		Snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomCenter;
 		IsEditMode = !string.IsNullOrEmpty(Id);
+
+		// جلب قائمة المدراء
+		Administrations = await AdminDataSevice.GetAll();
+
 		if (IsEditMode)
 		{
 			var existing = await StudentsDataService.GetById(Guid.Parse(Id));
@@ -90,12 +101,11 @@
 			}
 			else
 			{
-				// Optionally navigate away or show an error
 				NavigationManager.NavigateTo("/NotFound");
 			}
 		}
-
 	}
+
 
 	private async Task Save()
 	{
@@ -114,6 +124,8 @@
 		}
 
 	}
+	
+	
 
 	IList<IBrowserFile> files = new List<IBrowserFile>();
 	private void UploadFiles(IReadOnlyList<IBrowserFile> files)

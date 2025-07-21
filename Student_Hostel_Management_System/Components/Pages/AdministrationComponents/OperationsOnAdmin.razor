@@ -4,28 +4,29 @@
 @using Student_Hostel_Management_System.Data.Entites
 @using Student_Hostel_Management_System.Services.Interfaces
 @inject NavigationManager NavigationManager
-@inject IAdminstrationDataService AdminDataSevice
+@inject IAdminstrationDataService AdminDataService
 @inject ISnackbar Snackbar
 
 @rendermode InteractiveServer
 
 <MudDialog>
 	<TitleContent>
-		<h3>@(IsEditMode ? "تعديل مدير" : "إضافة مدير")</h3>
+		<h3>@(_isEditMode ? "تعديل مدير" : "إضافة مدير")</h3>
 	</TitleContent>
 	<DialogContent>
 		<MudPaper Class="p-4" dir="rtl">
-			<MudTextField @bind-Value="Administration.NID" Label="الرقم الوظيفي" />
-			<MudTextField @bind-Value="Administration.Name" Label="الإسم" />
-			<MudTextField @bind-Value="Administration.Phone" Label="رقم الهاتف" />
-			<MudTextField @bind-Value="Administration.Email" Label="البريد الإلكتورني" />
-			<MudTextField @bind-Value="Administration.Discription" Label="الوصف" />
+			<MudTextField @bind-Value="Admin.NID" Label="الرقم الوظيفي" />
+			<MudTextField @bind-Value="Admin.HostelNo" Label="رقم النزل" />
+			<MudTextField @bind-Value="Admin.Name" Label="الإسم" />
+			<MudTextField @bind-Value="Admin.Phone" Label="رقم الهاتف" />
+			<MudTextField @bind-Value="Admin.Email" Label="البريد الإلكتورني" />
+			<MudTextField @bind-Value="Admin.Description" Label="الوصف" />
 		</MudPaper>
 	</DialogContent>
 	<DialogActions>
 		<MudPaper Class="d-flex flex-row flex-grow-1 gap-4" Elevation="0">
 			<MudButton OnClick="Save" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Save" Color="Color.Primary">
-				@(IsEditMode ? "تعديل" : "حفظ")
+				@(_isEditMode ? "تعديل" : "حفظ")
 			</MudButton>
 		</MudPaper>
 	</DialogActions>
@@ -42,21 +43,21 @@
 	[Parameter]
 	public Guid? AdminId { get; set; }
 
-	private Administration Administration { get; set; } = new Administration();
+	public Admin Admin { get; set; } = new Admin();
 
-	private bool IsEditMode;
+	private bool _isEditMode;
 
 	protected override async Task OnInitializedAsync()
 	{
 
 		Snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomCenter;
-		IsEditMode = !string.IsNullOrEmpty(Id);
-		if (IsEditMode)
+		_isEditMode = !string.IsNullOrEmpty(Id);
+		if (_isEditMode)
 		{
-			var existing = await AdminDataSevice.GetById(Guid.Parse(Id));
+			var existing = await AdminDataService.GetById(Guid.Parse(Id));
 			if (existing != null)
 			{
-				Administration = existing;
+				Admin = existing;
 			}
 			else
 			{
@@ -69,18 +70,18 @@
 
 	private async Task Save()
 	{
-		if (IsEditMode)
+		if (_isEditMode)
 		{
-			await AdminDataSevice.Update(Guid.Parse(Id),Administration);
+			await AdminDataService.Update(Guid.Parse(Id),Admin);
 			// Optionally navigate back to the list or show a success message
-			// add snackbar message
+			// add a snackbar message
 			Snackbar.Add("تم التعديل بنجاح", Severity.Success);
 		}
 		else
 		{
-			await AdminDataSevice.Add(Administration);
+			await AdminDataService.Add(Admin);
 			Snackbar.Add("تم الاضافة بنجاح", Severity.Success);
-			Administration = new Administration(); // Reset the form after adding
+			Admin = new Admin(); // Reset the form after adding
 		}
 
 	}

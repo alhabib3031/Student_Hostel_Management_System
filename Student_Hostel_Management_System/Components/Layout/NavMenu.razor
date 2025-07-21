@@ -1,35 +1,100 @@
 ﻿@implements IDisposable
-
 @inject NavigationManager NavigationManager
 
-<MudNavMenu>
-    <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
-
-    <MudNavLink Href="AdministrationList" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.List">AdministrationList</MudNavLink>
-
-    <MudNavLink Href="StudentList" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.List">StudentList</MudNavLink>
-
-    @* <MudNavLink Href="OperationsOnStudent" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.AppRegistration">التسجيل</MudNavLink> *@
-
-    <MudNavLink Href="auth" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Lock">Auth Required</MudNavLink>
-    <AuthorizeView>
-        <Authorized>
-            <MudNavLink Href="Account/Manage" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Person">@context.User.Identity?.Name</MudNavLink>
-            <form action="Account/Logout" method="post">
-                <AntiforgeryToken />
-                <input type="hidden" name="ReturnUrl" value="@currentUrl" />
-                <button type="submit" class="mud-nav-link mud-ripple">
-                    <MudIcon Icon="@Icons.Material.Filled.Logout" Color="Color.Info" Class="mr-3"></MudIcon> Logout
-                </button>
-            </form>
-        </Authorized>
-        <NotAuthorized>
-            <MudNavLink Href="Account/Register" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Person">Register</MudNavLink>
-            <MudNavLink Href="Account/Login" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Password">Login</MudNavLink>
-        </NotAuthorized>
-    </AuthorizeView>
+<MudNavMenu Bordered="true" 
+            Color="Color.Primary"
+            Class="pa-2">
+    
+    <!-- الصفحة الرئيسية -->
+    <MudNavLink Href="" 
+                Match="NavLinkMatch.All" 
+                Icon="@Icons.Material.Filled.Home"
+                >
+        الرئيسية
+    </MudNavLink>
+    
+    <MudDivider Class="my-3" />
+    
+    <!-- إدارة المدراء -->
+    <MudNavGroup Text="إدارة المدراء" 
+                 Icon="@Icons.Material.Filled.AdminPanelSettings"
+                 Expanded="true"
+                 Class="mb-2">
+        <MudNavLink Href="AdminList" 
+                    Match="NavLinkMatch.All" 
+                    Icon="@Icons.Material.Filled.SupervisorAccount"
+                    Class="rounded ma-1">
+            قائمة المدراء
+        </MudNavLink>
+        
+        @* <MudNavLink Href="AddAdministration"  *@
+        @*             Match="NavLinkMatch.All"  *@
+        @*             Icon="@Icons.Material.Filled.PersonAdd" *@
+        @*             Class="rounded ma-1"> *@
+        @*     إضافة مدير جديد *@
+        @* </MudNavLink> *@
+    </MudNavGroup>
+    
+    <!-- إدارة الطلاب -->
+    <MudNavGroup Text="إدارة الطلاب" 
+                 Icon="@Icons.Material.Filled.Groups"
+                 Expanded="true"
+                 Class="mb-2">
+        <MudNavLink Href="StudentList" 
+                    Match="NavLinkMatch.All" 
+                    Icon="@Icons.Material.Filled.People"
+                    Class="rounded ma-1">
+            قائمة الطلاب
+        </MudNavLink>
+        
+        @* <MudNavLink Href="AddStudent"  *@
+        @*             Match="NavLinkMatch.All"  *@
+        @*             Icon="@Icons.Material.Filled.PersonAdd" *@
+        @*             Class="rounded ma-1"> *@
+        @*     إضافة طالب جديد *@
+        @* </MudNavLink> *@
+        @* *@
+        @* <MudNavLink Href="StudentReports"  *@
+        @*             Match="NavLinkMatch.All"  *@
+        @*             Icon="@Icons.Material.Filled.Assessment" *@
+        @*             Class="rounded ma-1"> *@
+        @*     تقارير الطلاب *@
+        @* </MudNavLink> *@
+    </MudNavGroup>
 </MudNavMenu>
 
+<style>
+    .mud-nav-link {
+        transition: all 0.3s ease;
+        border-radius: 8px;
+        margin: 2px 0;
+    }
+    
+    .mud-nav-link:hover {
+        background-color: rgba(25, 118, 210, 0.08);
+        transform: translateX(-4px);
+    }
+    
+    .mud-nav-link.active {
+        background-color: rgba(25, 118, 210, 0.12);
+        border-right: 3px solid #1976d2;
+    }
+    
+    .mud-nav-group {
+        margin-bottom: 8px;
+    }
+    
+    .mud-nav-group .mud-nav-group-header {
+        font-weight: 600;
+        color: #1976d2;
+        padding: 8px 16px;
+        border-radius: 6px;
+    }
+    
+    .mud-nav-group .mud-nav-group-header:hover {
+        background-color: rgba(25, 118, 210, 0.04);
+    }
+</style>
 
 @code {
     private string? currentUrl;
@@ -51,4 +116,3 @@
         NavigationManager.LocationChanged -= OnLocationChanged;
     }
 }
-
